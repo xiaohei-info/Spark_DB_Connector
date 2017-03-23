@@ -39,7 +39,7 @@ case class CollectionWriterBuilder[C] private[hbase](
 
 //todo:trait
 //todo:collectionData implicit
-class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) {
+private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable{
   def toHBase(sc: SparkContext
               , tableName: String
               , autoFlush: Option[(Boolean, Boolean)] = None
@@ -48,7 +48,7 @@ class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) {
 }
 
 //todo:trait
-class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
+private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
   def save(): Unit = {
     val conf = HBaseConf.fromSpark(builder.sc.getConf).createHadoopBaseConf()
 

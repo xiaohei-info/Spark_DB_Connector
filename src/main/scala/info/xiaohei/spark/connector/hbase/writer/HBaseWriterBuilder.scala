@@ -36,11 +36,11 @@ case class HBaseWriterBuilder[R] private[hbase](
   }
 }
 
-class HBaseWriterBuildMaker[R](rdd: RDD[R]) extends Serializable {
+private[hbase] class HBaseWriterBuildMaker[R](rdd: RDD[R]) extends Serializable {
   def toHBase(tableName: String) = HBaseWriterBuilder(rdd, tableName)
 }
 
-class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]) extends Serializable {
+private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]) extends Serializable {
   def save(): Unit = {
     val conf = HBaseConf.fromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)

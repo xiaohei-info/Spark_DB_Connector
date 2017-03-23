@@ -6,7 +6,7 @@ package info.xiaohei.spark.connector.hbase
   * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
-object CommonUtils {
+private[hbase] object CommonUtils {
 
   def columnsWithFamily(defaultColumnFamily: Option[String], columns: Iterable[String]): Iterable[(String, String)] = {
     columns.map {

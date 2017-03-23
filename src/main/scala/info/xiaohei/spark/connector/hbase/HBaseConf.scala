@@ -25,7 +25,7 @@ private[hbase] case class HBaseConf(hbaseHost: Option[String] = None) {
   }
 }
 
-object HBaseConf {
+private[hbase] object HBaseConf {
 
   val defaultHBaseHost = "localhost"
 

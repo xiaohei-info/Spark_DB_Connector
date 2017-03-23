@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
   * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
-class HBaseContext(@transient sc: SparkContext) extends Serializable {
+private[hbase] class HBaseContext(@transient sc: SparkContext) extends Serializable {
   def fromHBase[R: ClassTag](tableName: String): HBaseReaderBuilder[R] = new HBaseReaderBuilder[R](sc, tableName = tableName)
 }
 
