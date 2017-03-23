@@ -33,4 +33,8 @@ private[hbase] object HBaseConf {
     val hbaseHost = conf.get("spark.hbase.host", null)
     HBaseConf(Option(hbaseHost))
   }
+
+  def createHBaseConf(hbaseHost: String) = {
+    HBaseConf(Option(hbaseHost))
+  }
 }

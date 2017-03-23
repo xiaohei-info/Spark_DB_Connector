@@ -3,7 +3,7 @@ package info.xiaohei.spark.connector.hbase.writer
 import info.xiaohei.spark.connector.hbase.HBaseConf
 import org.apache.hadoop.hbase.client.{HTable, Put}
 import org.apache.hadoop.hbase.util.Bytes
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.JavaConversions._
 
@@ -16,7 +16,7 @@ import scala.collection.JavaConversions._
 
 //todo:trait
 case class CollectionWriterBuilder[C] private[hbase](
-                                                      @transient sc: SparkContext,
+                                                      private[hbase] val hbaseHost: String,
                                                       private[hbase] val collectionData: Iterable[C],
                                                       private[hbase] val tableName: String,
                                                       private[hbase] val autoFlush: Option[(Boolean, Boolean)],
@@ -40,17 +40,17 @@ case class CollectionWriterBuilder[C] private[hbase](
 //todo:trait
 //todo:collectionData implicit
 private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
-  def toHBase(sc: SparkContext
+  def toHBase(hbaseHost: String
               , tableName: String
               , autoFlush: Option[(Boolean, Boolean)] = None
               , writeBufferSize: Option[Long] = None)
-  = CollectionWriterBuilder[C](sc, collectionData, tableName, autoFlush, writeBufferSize)
+  = CollectionWriterBuilder[C](hbaseHost, collectionData, tableName, autoFlush, writeBufferSize)
 }
 
 //todo:trait
 private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
   def save(): Unit = {
-    val conf = HBaseConf.fromSpark(builder.sc.getConf).createHadoopBaseConf()
+    val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
 
     val table = new HTable(conf, builder.tableName)
     //true为批量写,false为多线程并发写
