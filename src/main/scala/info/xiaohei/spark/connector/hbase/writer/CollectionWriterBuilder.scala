@@ -15,7 +15,7 @@ import scala.collection.JavaConversions._
   */
 
 //todo:trait
-private[hbase] case class CollectionWriterBuilder[C](
+case class CollectionWriterBuilder[C] private[hbase](
                                                       private[hbase] val sc: SparkContext,
                                                       private[hbase] val collectionData: Iterable[C],
                                                       private[hbase] val tableName: String,
@@ -73,7 +73,7 @@ class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: 
       }
       //val columnsNames = Utils.chosenColumns(builder.columns, writer.columns)
       require(builder.columns.nonEmpty, "No columns have been defined for the operation")
-      val columnNames= builder.columns
+      val columnNames = builder.columns
       val rowkey = convertedData.head.get
       val columnData = convertedData.drop(1)
 

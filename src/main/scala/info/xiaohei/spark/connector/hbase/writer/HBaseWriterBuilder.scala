@@ -14,7 +14,7 @@ import org.apache.spark.rdd.RDD
   * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
-private[hbase] case class HBaseWriterBuilder[R](
+case class HBaseWriterBuilder[R] private[hbase](
                                                  private[hbase] val rdd: RDD[R],
                                                  private[hbase] val tableName: String,
                                                  //以下的参数通过方法动态设置
