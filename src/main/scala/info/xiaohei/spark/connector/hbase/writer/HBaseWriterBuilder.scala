@@ -9,7 +9,10 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.rdd.RDD
 
 /**
-  * Created by xiaohei on 2017/3/7.
+  * Author: xiaohei
+  * Date: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
 private[hbase] case class HBaseWriterBuilder[R](
                                                  private[hbase] val rdd: RDD[R],
@@ -20,7 +23,7 @@ private[hbase] case class HBaseWriterBuilder[R](
                                                )
   extends Serializable {
 
-  def selectColumns(cols: String*) = {
+  def insert(cols: String*) = {
     require(this.columns.isEmpty, "Columns haven't been set")
     require(cols.nonEmpty, "Columns must by set,at least one")
     this.copy(columns = cols)
@@ -34,10 +37,10 @@ private[hbase] case class HBaseWriterBuilder[R](
 }
 
 class HBaseWriterBuildMaker[R](rdd: RDD[R]) extends Serializable {
-  def toHBaseTable(tableName: String) = HBaseWriterBuilder(rdd, tableName)
+  def toHBase(tableName: String) = HBaseWriterBuilder(rdd, tableName)
 }
 
-class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: FieldWriter[R]) extends Serializable {
+class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]) extends Serializable {
   def save(): Unit = {
     val conf = HBaseConf.fromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)
@@ -79,9 +82,9 @@ class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: FieldWrite
 
 trait HBaseWriterBuilderConversions extends Serializable {
 
-  implicit def rdd2HBaseBuildMaker[R](rdd: RDD[R]): HBaseWriterBuildMaker[R] = new HBaseWriterBuildMaker[R](rdd)
+  implicit def rddToHBaseBuildMaker[R](rdd: RDD[R]): HBaseWriterBuildMaker[R] = new HBaseWriterBuildMaker[R](rdd)
 
-  implicit def builder2Writer[R](builder: HBaseWriterBuilder[R])(implicit writer: FieldWriter[R]): HBaseWriter[R] = new HBaseWriter[R](builder)
+  implicit def builderToWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]): HBaseWriter[R] = new HBaseWriter[R](builder)
 }
 
 

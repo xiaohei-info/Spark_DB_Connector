@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.fuge.bigdata</groupId>
-    <artifactId>fuge-bigdata-db-connector</artifactId>
+    <groupId>info.xiaohei.spark</groupId>
+    <artifactId>database-connector</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

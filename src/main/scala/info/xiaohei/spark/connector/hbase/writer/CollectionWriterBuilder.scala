@@ -9,10 +9,9 @@ import scala.collection.JavaConversions._
 
 /**
   * Author: xiaohei
-  * Date: 2017/3/23
-  * Email yuande.jiang@fugetech.com
-  * Last Modified by: xiaohei
-  * Last Modified time: 2017/3/23
+  * Date: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
 
 //todo:trait
@@ -25,7 +24,7 @@ private[hbase] case class CollectionWriterBuilder[C](
                                                       private[hbase] val defaultColumnFamily: Option[String] = None,
                                                       private[hbase] val columns: Iterable[String] = Seq.empty
                                                     ) {
-  def selectColumns(cols: String*) = {
+  def insert(cols: String*) = {
     require(this.columns.isEmpty, "Columns haven't been set")
     require(cols.nonEmpty, "Columns must by set,at least one")
     this.copy(columns = cols)
@@ -41,15 +40,15 @@ private[hbase] case class CollectionWriterBuilder[C](
 //todo:trait
 //todo:collectionData implicit
 class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) {
-  def toHBaseTable(sc: SparkContext
-                   , tableName: String
-                   , autoFlush: Option[(Boolean, Boolean)] = None
-                   , writeBufferSize: Option[Long] = None)
+  def toHBase(sc: SparkContext
+              , tableName: String
+              , autoFlush: Option[(Boolean, Boolean)] = None
+              , writeBufferSize: Option[Long] = None)
   = CollectionWriterBuilder[C](sc, collectionData, tableName, autoFlush, writeBufferSize)
 }
 
 //todo:trait
-class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: FieldWriter[C]) extends Serializable {
+class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
   def save(): Unit = {
     val conf = HBaseConf.fromSpark(builder.sc.getConf).createHadoopBaseConf()
 
@@ -109,5 +108,5 @@ class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: 
 trait CollectionWriterBuilderConversions extends Serializable {
   implicit def collectionToBuildMaker[C](collectionData: Iterable[C]): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
 
-  implicit def builderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: FieldWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
+  implicit def builderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
 }

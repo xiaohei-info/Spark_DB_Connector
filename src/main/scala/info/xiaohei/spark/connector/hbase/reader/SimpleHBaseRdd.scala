@@ -1,6 +1,6 @@
 package info.xiaohei.spark.connector.hbase.reader
 
-import info.xiaohei.spark.connector.hbase.Utils
+import info.xiaohei.spark.connector.hbase.CommonUtils
 import org.apache.hadoop.hbase.CellUtil
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
@@ -14,14 +14,13 @@ import scala.reflect.ClassTag
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email yuande.jiang@fugetech.com
-  * Last Modified by: xiaohei
-  * Last Modified time: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
 //todo:SimpleHBaseRdd
 class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWritable, Result],
                                   builder: HBaseReaderBuilder[R])
-                                 (implicit reader: FieldReader[R]) extends RDD[R](hadoopHBaseRDD) {
+                                 (implicit reader: DataReader[R]) extends RDD[R](hadoopHBaseRDD) {
   @DeveloperApi
   override def compute(split: Partition, context: TaskContext): Iterator[R] = {
     firstParent[(ImmutableBytesWritable, Result)].iterator(split, context)
@@ -36,7 +35,7 @@ class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWri
     //val columnNames = Utils.chosenColumns(builder.columns, reader.columns)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
     val columnNames = builder.columns
-    val columnsWithFamiy = Utils.columnsWithFamily(builder.defaultColumnFamily, columnNames)
+    val columnsWithFamiy = CommonUtils.columnsWithFamily(builder.defaultColumnFamily, columnNames)
     val columns = columnsWithFamiy
       .map(t => (Bytes.toBytes(t._1), Bytes.toBytes(t._2)))
       .map {
@@ -47,6 +46,6 @@ class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWri
             None
           }
       }.toList
-    reader.revertFromHBaseData(Some(key.get) :: columns)
+    reader.transformHBaseData(Some(key.get) :: columns)
   }
 }

@@ -1,15 +1,12 @@
 package info.xiaohei.spark.connector.hbase
 
 /**
-  * Created by xiaohei on 2017/3/20.
+  * Author: xiaohei
+  * Date: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
-object Utils {
-//  def chosenColumns(colOptions: Iterable[String]*): Iterable[String] = {
-//    val valid = colOptions.filter(c => c.nonEmpty)
-//    if (valid.isEmpty) throw new IllegalArgumentException("No columns have been defined for the operation")
-//    if (valid.size > 1) throw new IllegalArgumentException("Columns are defined twice, you must define them only once")
-//    valid.head
-//  }
+object CommonUtils {
 
   def columnsWithFamily(defaultColumnFamily: Option[String], columns: Iterable[String]): Iterable[(String, String)] = {
     columns.map {

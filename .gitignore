@@ -18,4 +18,4 @@ target/surefire-reports/
 hs_err_pid*
 
 # current project
-
+.gitignore

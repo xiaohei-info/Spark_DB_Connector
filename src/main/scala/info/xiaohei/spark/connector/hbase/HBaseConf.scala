@@ -4,7 +4,10 @@ import org.apache.hadoop.hbase.{HBaseConfiguration, HConstants}
 import org.apache.spark.SparkConf
 
 /**
-  * Created by xiaohei on 2017/3/20.
+  * Author: xiaohei
+  * Date: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
 
 //todo:读取本地hbase-site.xml文件内容

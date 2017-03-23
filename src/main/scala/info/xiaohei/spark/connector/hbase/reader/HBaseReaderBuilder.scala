@@ -1,6 +1,6 @@
 package info.xiaohei.spark.connector.hbase.reader
 
-import info.xiaohei.spark.connector.hbase.{HBaseConf, Utils}
+import info.xiaohei.spark.connector.hbase.{HBaseConf, CommonUtils}
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat
@@ -11,12 +11,10 @@ import scala.reflect.ClassTag
 
 /**
   * Author: xiaohei
-  * Date: 2017/3/20
-  * Email yuande.jiang@fugetech.com
-  * Last Modified by: xiaohei
-  * Last Modified time: 2017/3/20
+  * Date: 2017/3/21
+  * Email: xiaohei.info@gmail.com
+  * Host: www.xiaohei.info
   */
-//todo://为什么需要ClassTag
 case class HBaseReaderBuilder[R: ClassTag] private[hbase](
                                                            @transient sc: SparkContext,
                                                            private[hbase] val tableName: String,
@@ -51,13 +49,13 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
 }
 
 trait HBaseReaderBuilderConversions extends Serializable {
-  implicit def toHBaseRDD[R: ClassTag](builder: HBaseReaderBuilder[R])(implicit reader: FieldReader[R]): RDD[R] = {
+  implicit def toHBaseRDD[R: ClassTag](builder: HBaseReaderBuilder[R])(implicit reader: DataReader[R]): RDD[R] = {
     val hbaseConfig = HBaseConf.fromSpark(builder.sc.getConf).createHadoopBaseConf()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, builder.tableName)
     //val columnNames = Utils.chosenColumns(builder.columns, reader.columns)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
     val columnNames = builder.columns
-    val fullColumnNames = Utils.getFullColumnNames(builder.defaultColumnFamily, columnNames)
+    val fullColumnNames = CommonUtils.getFullColumnNames(builder.defaultColumnFamily, columnNames)
     if (fullColumnNames.nonEmpty) {
       hbaseConfig.set(TableInputFormat.SCAN_COLUMNS, fullColumnNames.mkString(" "))
     }
