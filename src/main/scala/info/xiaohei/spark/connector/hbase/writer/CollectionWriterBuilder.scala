@@ -16,7 +16,7 @@ import scala.collection.JavaConversions._
 
 //todo:trait
 case class CollectionWriterBuilder[C] private[hbase](
-                                                      private[hbase] val sc: SparkContext,
+                                                      @transient sc: SparkContext,
                                                       private[hbase] val collectionData: Iterable[C],
                                                       private[hbase] val tableName: String,
                                                       private[hbase] val autoFlush: Option[(Boolean, Boolean)],
@@ -39,7 +39,7 @@ case class CollectionWriterBuilder[C] private[hbase](
 
 //todo:trait
 //todo:collectionData implicit
-private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable{
+private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
   def toHBase(sc: SparkContext
               , tableName: String
               , autoFlush: Option[(Boolean, Boolean)] = None
@@ -108,5 +108,6 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
 trait CollectionWriterBuilderConversions extends Serializable {
   implicit def collectionToBuildMaker[C](collectionData: Iterable[C]): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
 
-  implicit def builderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
+  //todo:不可以重名
+  implicit def collectionBuilderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
 }

@@ -51,7 +51,7 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
   def tupleMap(data: HBaseData): T
 }
 
-trait FieldReaderConversions extends Serializable {
+trait DataReaderConversions extends Serializable {
 
   // Simple types
 
