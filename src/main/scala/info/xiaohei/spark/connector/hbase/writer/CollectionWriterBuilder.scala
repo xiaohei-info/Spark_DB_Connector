@@ -14,7 +14,6 @@ import scala.collection.JavaConversions._
   * Host: www.xiaohei.info
   */
 
-//todo:trait
 case class CollectionWriterBuilder[C] private[hbase](
                                                       private[hbase] val hbaseHost: String,
                                                       private[hbase] val collectionData: Iterable[C],
@@ -37,7 +36,6 @@ case class CollectionWriterBuilder[C] private[hbase](
   }
 }
 
-//todo:trait
 //todo:collectionData implicit
 private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
   def toHBase(hbaseHost: String
