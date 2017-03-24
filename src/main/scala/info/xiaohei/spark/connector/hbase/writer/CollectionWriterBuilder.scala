@@ -55,13 +55,10 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
     val table = new HTable(conf, builder.tableName)
     //true为批量写,false为多线程并发写
     var batchOrMultiThread = true
-    //todo:方法
-    if (builder.autoFlush.nonEmpty) {
+
+    if (builder.autoFlush.nonEmpty && builder.writeBufferSize.nonEmpty) {
       val (autoFlush, clearBufferOnFail) = builder.autoFlush.get
       table.setAutoFlush(autoFlush, clearBufferOnFail)
-      batchOrMultiThread = false
-    }
-    if (builder.writeBufferSize.nonEmpty) {
       table.setWriteBufferSize(builder.writeBufferSize.get)
       batchOrMultiThread = false
     }
