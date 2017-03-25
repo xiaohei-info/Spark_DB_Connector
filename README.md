@@ -134,7 +134,7 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
 当你不需要读取rowkey的值时，只需要将fromHBase的泛型类型改为二元组
 
 即读取的列数为n，泛型类型为n元组时，列名和元组中的各个元素相对应
-读取的列数为b，泛型类型为n+1元组时，元组的第一个元素为rowkey
+读取的列数为n，泛型类型为n+1元组时，元组的第一个元素为rowkey
 
 当各个列位于不同列族时，设置列族的方式同写入HBase一致
 
