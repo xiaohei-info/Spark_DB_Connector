@@ -73,7 +73,7 @@ rdd.toHBase("mytable")
 #### Scala集合/序列写入HBase
 
 ```
-val 添加Mysql的支持  = Seq[(String, String)](
+val dataList  = Seq[(String, String)](
       ("00001475304346643896037", "kgJkm0euSbe"),
       ("00001475376619355219953", "kiaR40qzI8o"),
       ("00001475458728618943637", "kgCoW0hgzXO"),
@@ -131,7 +131,9 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
 
 上面的例子中，fromHBase的泛型类型为三元组，但是select中只读取了两列值，因此，该三元组中第一个元素将是rowkey的值，其他元素按照列的顺序依次类推   
 
-当你不需要读取rowkey的值时，只需要将fromHBase的泛型类型改为二元组   即读取的列数为n，泛型类型为n元组时，列名和元组中的各个元素相对应   
+当你不需要读取rowkey的值时，只需要将fromHBase的泛型类型改为二元组
+
+即读取的列数为n，泛型类型为n元组时，列名和元组中的各个元素相对应
 读取的列数为b，泛型类型为n+1元组时，元组的第一个元素为rowkey
 
 当各个列位于不同列族时，设置列族的方式同写入HBase一致
