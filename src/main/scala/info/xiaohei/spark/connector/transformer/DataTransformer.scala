@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.hbase
+package info.xiaohei.spark.connector.transformer
 
 /**
   * Author: xiaohei

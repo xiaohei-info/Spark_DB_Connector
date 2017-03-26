@@ -1,7 +1,9 @@
 package info.xiaohei.spark.connector
 
-import info.xiaohei.spark.connector.hbase.reader.{DataReaderConversions, HBaseContextConversions, HBaseReaderBuilderConversions}
-import info.xiaohei.spark.connector.hbase.writer.{CollectionWriterBuilderConversions, DataWriterConversions, HBaseWriterBuilderConversions}
+import info.xiaohei.spark.connector.hbase.reader.{HBaseContextConversions, HBaseReaderBuilderConversions}
+import info.xiaohei.spark.connector.hbase.writer.{CollectionWriterBuilderConversions, HBaseWriterBuilderConversions}
+import info.xiaohei.spark.connector.transformer.reader.DataReaderConversions
+import info.xiaohei.spark.connector.transformer.writer.DataWriterConversions
 
 
 /**

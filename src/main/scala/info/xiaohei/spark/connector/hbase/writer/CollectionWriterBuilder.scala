@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.hbase.writer
 
 import info.xiaohei.spark.connector.hbase.HBaseConf
+import info.xiaohei.spark.connector.transformer.writer.DataWriter
 import org.apache.hadoop.hbase.client.{HTable, Put}
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.{SparkConf, SparkContext}

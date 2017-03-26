@@ -1,6 +1,6 @@
-package info.xiaohei.spark.connector.hbase.reader
+package info.xiaohei.spark.connector.transformer.reader
 
-import info.xiaohei.spark.connector.hbase.DataTransformer
+import info.xiaohei.spark.connector.transformer.DataTransformer
 import org.apache.hadoop.hbase.util.Bytes
 
 /**

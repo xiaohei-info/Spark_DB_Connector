@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.hbase.writer
 
 import info.xiaohei.spark.connector.hbase.HBaseConf
+import info.xiaohei.spark.connector.transformer.writer.DataWriter
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
