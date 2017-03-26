@@ -8,7 +8,7 @@ import java.sql.{DriverManager, PreparedStatement}
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-case class MysqlCollectionWriterBuilder[C](
+case class MysqlWriterBuilder[C](
                                             //todo:从conf中读取
                                             private[mysql] val connectStr: String,
                                             private[mysql] val username: String,
@@ -36,15 +36,15 @@ case class MysqlCollectionWriterBuilder[C](
   //todo:where
 }
 
-private[mysql] class MysqlCollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
+private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
   def toMysql(connectStr: String,
               username: String,
               password: String,
               fitStatement: (PreparedStatement, C) => Unit) =
-    MysqlCollectionWriterBuilder[C](connectStr, username, password, collectionData, fitStatement)
+    MysqlWriterBuilder[C](connectStr, username, password, collectionData, fitStatement)
 }
 
-private[mysql] class MysqlCollectionWriter[C](builder: MysqlCollectionWriterBuilder[C])
+private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])
   extends Serializable {
   def save(): Unit = {
     val conn = DriverManager.getConnection(builder.connectStr, builder.username, builder.password)
@@ -71,10 +71,10 @@ private[mysql] class MysqlCollectionWriter[C](builder: MysqlCollectionWriterBuil
   }
 }
 
-trait MysqlCollectionWriterBuilderConversions extends Serializable {
+trait MysqlWriterBuilderConversions extends Serializable {
   implicit def mysqlCollectionToBuildMaker[C](collectionData: Iterable[C])
-  : MysqlCollectionWriterBuildMaker[C] = new MysqlCollectionWriterBuildMaker[C](collectionData)
+  : MysqlWriterBuildMaker[C] = new MysqlWriterBuildMaker[C](collectionData)
 
-  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlCollectionWriterBuilder[C])
-  : MysqlCollectionWriter[C] = new MysqlCollectionWriter[C](builder)
+  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlWriterBuilder[C])
+  : MysqlWriter[C] = new MysqlWriter[C](builder)
 }
