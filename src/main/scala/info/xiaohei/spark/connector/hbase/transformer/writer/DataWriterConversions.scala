@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.transformer.writer
+package info.xiaohei.spark.connector.hbase.transformer.writer
 
 import org.apache.hadoop.hbase.util.Bytes
 

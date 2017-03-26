@@ -1,6 +1,6 @@
-package info.xiaohei.spark.connector.transformer.writer
+package info.xiaohei.spark.connector.hbase.transformer.writer
 
-import info.xiaohei.spark.connector.transformer.DataTransformer
+import info.xiaohei.spark.connector.hbase.transformer.DataTransformer
 
 /**
   * Author: xiaohei

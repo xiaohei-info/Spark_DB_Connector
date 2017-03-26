@@ -1,7 +1,7 @@
 package info.xiaohei.spark.connector.hbase.reader
 
 import info.xiaohei.spark.connector.hbase.HBaseCommonUtils
-import info.xiaohei.spark.connector.transformer.reader.DataReader
+import info.xiaohei.spark.connector.hbase.transformer.reader.DataReader
 import org.apache.hadoop.hbase.CellUtil
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
