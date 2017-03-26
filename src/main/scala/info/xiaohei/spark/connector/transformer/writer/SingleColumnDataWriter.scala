@@ -6,6 +6,8 @@ package info.xiaohei.spark.connector.transformer.writer
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-trait SingleColumnDataWriter {
+trait SingleColumnDataWriter[T] extends DataWriter[T] {
+  override def convertHBaseData(data: T): HBaseData = Seq(mapSingleColumn(data))
 
+  def mapSingleColumn(data: T): Option[Array[Byte]]
 }
