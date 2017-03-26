@@ -1,6 +1,6 @@
 package info.xiaohei.spark.connector.hbase.reader
 
-import info.xiaohei.spark.connector.hbase.{CommonUtils, HBaseConf}
+import info.xiaohei.spark.connector.hbase.{HBaseCommonUtils, HBaseConf}
 import info.xiaohei.spark.connector.transformer.reader.DataReader
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
@@ -56,7 +56,7 @@ trait HBaseReaderBuilderConversions extends Serializable {
     //val columnNames = Utils.chosenColumns(builder.columns, reader.columns)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
     val columnNames = builder.columns
-    val fullColumnNames = CommonUtils.getFullColumnNames(builder.defaultColumnFamily, columnNames)
+    val fullColumnNames = HBaseCommonUtils.getFullColumnNames(builder.defaultColumnFamily, columnNames)
     if (fullColumnNames.nonEmpty) {
       hbaseConfig.set(TableInputFormat.SCAN_COLUMNS, fullColumnNames.mkString(" "))
     }

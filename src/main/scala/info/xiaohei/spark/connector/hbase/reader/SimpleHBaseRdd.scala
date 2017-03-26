@@ -1,6 +1,6 @@
 package info.xiaohei.spark.connector.hbase.reader
 
-import info.xiaohei.spark.connector.hbase.CommonUtils
+import info.xiaohei.spark.connector.hbase.HBaseCommonUtils
 import info.xiaohei.spark.connector.transformer.reader.DataReader
 import org.apache.hadoop.hbase.CellUtil
 import org.apache.hadoop.hbase.client.Result
@@ -36,7 +36,7 @@ class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWri
     //val columnNames = Utils.chosenColumns(builder.columns, reader.columns)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
     val columnNames = builder.columns
-    val columnsWithFamiy = CommonUtils.columnsWithFamily(builder.defaultColumnFamily, columnNames)
+    val columnsWithFamiy = HBaseCommonUtils.columnsWithFamily(builder.defaultColumnFamily, columnNames)
     val columns = columnsWithFamiy
       .map(t => (Bytes.toBytes(t._1), Bytes.toBytes(t._2)))
       .map {
