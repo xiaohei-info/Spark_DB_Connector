@@ -143,6 +143,8 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
 - [ ] 在hbase-site.xml中设置hbase host并读取   
 - [x] 将Scala集合/序列元素写入HBase   
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
+- [ ] Scala集合/序列写入Mysql时从conf中读取连接信息
+- [ ] 写入Mysql时fitStatement隐式完成
 - [ ] 读写HBase时添加salt特性   
 - [ ] 添加Mysql的支持   
 - [ ] 数据转换高级特性
