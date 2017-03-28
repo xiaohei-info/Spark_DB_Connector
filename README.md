@@ -98,7 +98,7 @@ dataList.toHBase("your-hbase-host"
       , Some(false, false)
       //该参数指定写入缓冲区的大小
       , Some(5 * 1024 * 1024))
-      .insert().insert("col1", "col2")
+      .insert("col1", "col2")
       .inColumnFamily("columnFamily")
       .save()
 ```
