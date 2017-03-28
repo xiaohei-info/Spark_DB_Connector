@@ -8,7 +8,7 @@ import org.apache.spark.SparkContext
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-private[hbase] class MysqlContext(@transient sc: SparkContext) extends Serializable {
+private[mysql] class MysqlContext(@transient sc: SparkContext) extends Serializable {
   def fromMysql(
                  connectStr: String,
                  username: String,
