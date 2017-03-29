@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.version>2.10.5</scala.version>
         <scala.binary.version>2.10</scala.binary.version>
-        <spark.version>1.6.2</spark.version>
+        <spark.version>1.6.0</spark.version>
         <hbase.version>0.98.4-hadoop2</hbase.version>
         <mysql.version>5.1.35</mysql.version>
     </properties>
@@ -20,13 +20,30 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
+        <!--spark-->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+
 
 
         <dependency>
@@ -35,7 +52,7 @@
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
-
+        <!--hbase-->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-common</artifactId>
