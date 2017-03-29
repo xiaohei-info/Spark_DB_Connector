@@ -138,6 +138,27 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
 
 当各个列位于不同列族时，设置列族的方式同写入HBase一致
 
+### SQL On HBase
+
+借助SQLContext的DataFrame接口，在组件中可以轻易实现SQL On HBase的功能。
+
+上例中的hbaseRdd是从HBase中读取出来的数据，在此RDD的基础上进行转换操作：
+
+```
+//创建org.apache.spark.sql.Row类型的RDD
+val rowRdd = hbaseRdd.map(r => Row(r._1, r._2, r._3))
+val sqlContext = new SQLContext(sc)
+val df = sqlContext.createDataFrame(
+      rowRdd,
+      StructType(Array(StructField("col1", StringType), StructField("col2", StringType), StructField("col3", StringType)))
+    )
+df.show()
+
+df.registerTempTable("mytable")
+sqlContext.sql("select col1 from mytable").show()
+```
+
+
 ## TODO LIST
 
 - [ ] 在hbase-site.xml中设置hbase host并读取   
