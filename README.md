@@ -169,6 +169,5 @@ sqlContext.sql("select col1 from mytable").show()
 - [ ] Scala集合/序列写入Mysql时从conf中读取连接信息
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] 数据转换高级特性/统一接口
-- [ ] test
 
 
