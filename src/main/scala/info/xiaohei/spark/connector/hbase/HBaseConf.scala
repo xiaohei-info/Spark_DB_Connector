@@ -10,10 +10,14 @@ import org.apache.spark.SparkConf
   * Host: www.xiaohei.info
   */
 
-//todo:读取本地hbase-site.xml文件内容
-private[hbase] case class HBaseConf(hbaseHost: Option[String] = None) {
+private[hbase] case class HBaseConf(hbaseHost: Option[String] = None
+                                    , hbaseConfig: String = "hbase-site.xml") {
   def createHadoopBaseConf() = {
     val conf = HBaseConfiguration.create()
+
+    val localConfigFile = Option(getClass.getClassLoader.getResource(hbaseConfig))
+    localConfigFile.foreach(c => conf.addResource(c))
+
     hbaseHost.foreach {
       host =>
         conf.set(HConstants.ZOOKEEPER_QUORUM, host)
