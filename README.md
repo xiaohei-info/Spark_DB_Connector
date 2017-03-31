@@ -28,6 +28,17 @@ val sc = new SparkContext(sparkConf)
 java -Dspark.hbase.host=your-hbase-host -jar ....
 ```
 
+**设置hbase-site.xml文件读取路径(可选)**
+
+如果有读取hbase-site.xml文件的需求时,可以通过设置下面的选项进行指定:
+
+```
+spark.hbase.config=your-hbase-config-path
+```
+
+设置该选项的方式同上
+注意:需要将hbase-site.xml文件添加到当前项目可识别的resource路径中,否则将无法读取,使用默认配置
+
 ### 向HBase写入数据
 
 **导入隐式转换：**
@@ -161,7 +172,7 @@ sqlContext.sql("select col1 from mytable").show()
 
 ## TODO LIST
 
-- [ ] 在hbase-site.xml中设置hbase host并读取   
+- [x] 在hbase-site.xml中设置hbase host并读取
 - [x] 将Scala集合/序列元素写入HBase   
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
