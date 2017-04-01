@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.hbase.reader
+package info.xiaohei.spark.connector.hbase.builder.reader
 
 import org.apache.spark.SparkContext
 

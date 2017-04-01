@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.hbase.reader
+package info.xiaohei.spark.connector.hbase.builder.reader
 
 import info.xiaohei.spark.connector.hbase.HBaseCommonUtils
 import info.xiaohei.spark.connector.hbase.transformer.reader.DataReader

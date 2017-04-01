@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.hbase.writer
+package info.xiaohei.spark.connector.hbase.builder.writer
 
 import info.xiaohei.spark.connector.hbase.HBaseConf
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
