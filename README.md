@@ -173,7 +173,8 @@ sqlContext.sql("select col1 from mytable").show()
 ## TODO LIST
 
 - [x] 在hbase-site.xml中设置hbase host并读取
-- [x] 将Scala集合/序列元素写入HBase   
+- [x] 将Scala集合/序列元素写入HBase
+- [ ] 自定义case class的解析
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
 - [x] 添加Mysql的支持
