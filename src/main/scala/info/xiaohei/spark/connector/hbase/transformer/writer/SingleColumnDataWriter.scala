@@ -7,7 +7,7 @@ package info.xiaohei.spark.connector.hbase.transformer.writer
   * Host: xiaohei.info
   */
 trait SingleColumnDataWriter[T] extends DataWriter[T] {
-  override def convertHBaseData(data: T): HBaseData = Seq(mapSingleColumn(data))
+  override def write(data: T): HBaseData = Seq(mapSingleColumn(data))
 
   def mapSingleColumn(data: T): Option[Array[Byte]]
 }

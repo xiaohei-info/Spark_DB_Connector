@@ -8,7 +8,7 @@ package info.xiaohei.spark.connector.hbase.transformer.reader
   */
 trait SingleColumnDataReader[T] extends DataReader[T] {
 
-  def transformHBaseData(data: HBaseData): T =
+  def read(data: HBaseData): T =
     if (data.size == 1)
       columnMapWithOption(data.head)
     else if (data.size == 2)

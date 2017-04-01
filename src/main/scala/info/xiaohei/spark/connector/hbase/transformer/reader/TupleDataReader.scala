@@ -10,7 +10,7 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
 
   val n: Int
 
-  def transformHBaseData(data: HBaseData): T =
+  def read(data: HBaseData): T =
     if (data.size == n)
       tupleMap(data)
     else if (data.size == n + 1)

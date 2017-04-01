@@ -47,6 +47,6 @@ class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWri
             None
           }
       }.toList
-    reader.transformHBaseData(Some(key.get) :: columns)
+    reader.read(Some(key.get) :: columns)
   }
 }

@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.util.Bytes
   */
 
 trait DataReader[T] extends DataTransformer {
-  def transformHBaseData(data: HBaseData): T
+  def read(data: HBaseData): T
 }
 
 

@@ -63,7 +63,7 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
     }
 
     def coverData(data: C): Put = {
-      val convertedData: Iterable[Option[Array[Byte]]] = writer.convertHBaseData(data)
+      val convertedData: Iterable[Option[Array[Byte]]] = writer.write(data)
       if (convertedData.size < 2) {
         throw new IllegalArgumentException("Expected at least two converted values, the first one should be the row key")
       }

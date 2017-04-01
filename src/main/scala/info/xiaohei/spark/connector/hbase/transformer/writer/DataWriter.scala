@@ -9,7 +9,7 @@ import info.xiaohei.spark.connector.hbase.transformer.DataTransformer
   * Host: www.xiaohei.info
   */
 trait DataWriter[T] extends DataTransformer{
-  def convertHBaseData(data: T): HBaseData
+  def write(data: T): HBaseData
 }
 
 
