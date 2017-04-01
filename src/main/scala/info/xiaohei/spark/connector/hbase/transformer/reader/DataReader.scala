@@ -14,7 +14,42 @@ trait DataReader[T] extends DataTransformer {
   def read(data: HBaseData): T
 }
 
+trait SingleColumnDataReader[T] extends DataReader[T] {
 
+  def read(data: HBaseData): T =
+    if (data.size == 1)
+      columnMapWithOption(data.head)
+    else if (data.size == 2)
+      columnMapWithOption(data.drop(1).head)
+    else
+      throw new IllegalArgumentException(s"Unexpected number of columns: expected 1 or 2, returned ${data.size}")
+
+  def columnMapWithOption(cols: Option[Array[Byte]]): T
+}
+
+trait TupleDataReader[T <: Product] extends DataReader[T] {
+
+  val n: Int
+
+  def read(data: HBaseData): T =
+    if (data.size == n)
+      tupleMap(data)
+    else if (data.size == n + 1)
+      tupleMap(data.drop(1))
+    else
+      throw new IllegalArgumentException(s"Unexpected number of columns: expected $n or ${n - 1}, returned ${data.size}")
+
+  def tupleMap(data: HBaseData): T
+}
+
+trait SingleColumnConcreteDataReader[T] extends SingleColumnDataReader[T] {
+
+  def columnMapWithOption(cols: Option[Array[Byte]]) =
+    if (cols.nonEmpty) columnMap(cols.get)
+    else throw new IllegalArgumentException("Null value assigned to concrete class. Use Option[T] instead")
+
+  def columnMap(cols: Array[Byte]): T
+}
 
 
 
