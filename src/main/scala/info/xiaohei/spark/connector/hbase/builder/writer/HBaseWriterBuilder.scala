@@ -55,7 +55,6 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
         if (convertedData.size < 2) {
           throw new IllegalArgumentException("Expected at least two converted values, the first one should be the row key")
         }
-        //val columnsNames = Utils.chosenColumns(builder.columns, writer.columns)
         require(builder.columns.nonEmpty, "No columns have been defined for the operation")
         val columnNames = builder.columns
         val rowkey = convertedData.head.get
