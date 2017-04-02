@@ -8,6 +8,13 @@ package info.xiaohei.spark.connector.hbase
   */
 private[hbase] object HBaseCommonUtils {
 
+  def chooseColums(colOpts: Iterable[String]*): Iterable[String] = {
+    val cols = colOpts.filter(_.nonEmpty)
+    if (cols.isEmpty) throw new IllegalArgumentException("No columns have been set for current operation")
+    if (cols.size > 1) throw new IllegalArgumentException("Columns are defind twice,it must only define once")
+    cols.head
+  }
+
   def columnsWithFamily(defaultColumnFamily: Option[String], columns: Iterable[String]): Iterable[(String, String)] = {
     columns.map {
       c =>
