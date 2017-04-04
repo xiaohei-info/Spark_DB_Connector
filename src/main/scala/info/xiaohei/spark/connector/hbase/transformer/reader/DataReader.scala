@@ -45,10 +45,10 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
 trait SingleColumnConcreteDataReader[T] extends SingleColumnDataReader[T] {
 
   override def columnMapWithOption(cols: Option[Array[Byte]]) =
-    if (cols.nonEmpty) columnMap(cols.get)
+    if (cols.nonEmpty) readSingleColumn(cols.get)
     else throw new IllegalArgumentException("Null value assigned to concrete class. Use Option[T] instead")
 
-  def columnMap(cols: Array[Byte]): T
+  def readSingleColumn(cols: Array[Byte]): T
 }
 
 

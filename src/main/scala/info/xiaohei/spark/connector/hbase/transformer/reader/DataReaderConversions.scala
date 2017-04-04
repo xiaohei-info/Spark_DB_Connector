@@ -14,35 +14,35 @@ trait DataReaderConversions extends Serializable {
   // Simple types
 
   implicit def intReader: DataReader[Int] = new SingleColumnConcreteDataReader[Int] {
-    override def columnMap(cols: Array[Byte]): Int = Bytes.toInt(cols)
+    override def readSingleColumn(cols: Array[Byte]): Int = Bytes.toInt(cols)
   }
 
   implicit def longReader: DataReader[Long] = new SingleColumnConcreteDataReader[Long] {
-    override def columnMap(cols: Array[Byte]): Long = Bytes.toLong(cols)
+    override def readSingleColumn(cols: Array[Byte]): Long = Bytes.toLong(cols)
   }
 
   implicit def shortReader: DataReader[Short] = new SingleColumnConcreteDataReader[Short] {
-    override def columnMap(cols: Array[Byte]): Short = Bytes.toShort(cols)
+    override def readSingleColumn(cols: Array[Byte]): Short = Bytes.toShort(cols)
   }
 
   implicit def doubleReader: DataReader[Double] = new SingleColumnConcreteDataReader[Double] {
-    override def columnMap(cols: Array[Byte]): Double = Bytes.toDouble(cols)
+    override def readSingleColumn(cols: Array[Byte]): Double = Bytes.toDouble(cols)
   }
 
   implicit def floatReader: DataReader[Float] = new SingleColumnConcreteDataReader[Float] {
-    override def columnMap(cols: Array[Byte]): Float = Bytes.toFloat(cols)
+    override def readSingleColumn(cols: Array[Byte]): Float = Bytes.toFloat(cols)
   }
 
   implicit def booleanReader: DataReader[Boolean] = new SingleColumnConcreteDataReader[Boolean] {
-    override def columnMap(cols: Array[Byte]): Boolean = Bytes.toBoolean(cols)
+    override def readSingleColumn(cols: Array[Byte]): Boolean = Bytes.toBoolean(cols)
   }
 
   implicit def bigDecimalReader: DataReader[BigDecimal] = new SingleColumnConcreteDataReader[BigDecimal] {
-    override def columnMap(cols: Array[Byte]): BigDecimal = Bytes.toBigDecimal(cols)
+    override def readSingleColumn(cols: Array[Byte]): BigDecimal = Bytes.toBigDecimal(cols)
   }
 
   implicit def stringReader: DataReader[String] = new SingleColumnConcreteDataReader[String] {
-    override def columnMap(cols: Array[Byte]): String = Bytes.toString(cols)
+    override def readSingleColumn(cols: Array[Byte]): String = Bytes.toString(cols)
   }
 
   // Options

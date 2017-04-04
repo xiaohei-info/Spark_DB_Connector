@@ -10,35 +10,35 @@ import org.apache.hadoop.hbase.util.Bytes
   */
 trait DataWriterConversions extends Serializable{
   implicit def intWriter: DataWriter[Int] = new SingleColumnDataWriter[Int] {
-    override def mapSingleColumn(data: Int): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Int): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def longWriter: DataWriter[Long] = new SingleColumnDataWriter[Long] {
-    override def mapSingleColumn(data: Long): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Long): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def shortWriter: DataWriter[Short] = new SingleColumnDataWriter[Short] {
-    override def mapSingleColumn(data: Short): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Short): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def doubleWriter: DataWriter[Double] = new SingleColumnDataWriter[Double] {
-    override def mapSingleColumn(data: Double): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Double): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def floatWriter: DataWriter[Float] = new SingleColumnDataWriter[Float] {
-    override def mapSingleColumn(data: Float): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Float): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def booleanWriter: DataWriter[Boolean] = new SingleColumnDataWriter[Boolean] {
-    override def mapSingleColumn(data: Boolean): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: Boolean): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   implicit def bigDecimalWriter: DataWriter[BigDecimal] = new SingleColumnDataWriter[BigDecimal] {
-    override def mapSingleColumn(data: BigDecimal): Option[Array[Byte]] = Some(Bytes.toBytes(data.bigDecimal))
+    override def writeSingleColumn(data: BigDecimal): Option[Array[Byte]] = Some(Bytes.toBytes(data.bigDecimal))
   }
 
   implicit def stringWriter: DataWriter[String] = new SingleColumnDataWriter[String] {
-    override def mapSingleColumn(data: String): Option[Array[Byte]] = Some(Bytes.toBytes(data))
+    override def writeSingleColumn(data: String): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
   // Options

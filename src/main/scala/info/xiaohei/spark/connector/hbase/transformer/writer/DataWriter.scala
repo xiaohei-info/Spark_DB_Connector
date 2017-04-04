@@ -13,9 +13,9 @@ trait DataWriter[T] extends DataTransformer{
 }
 
 trait SingleColumnDataWriter[T] extends DataWriter[T] {
-  override def write(data: T): HBaseData = Seq(mapSingleColumn(data))
+  override def write(data: T): HBaseData = Seq(writeSingleColumn(data))
 
-  def mapSingleColumn(data: T): Option[Array[Byte]]
+  def writeSingleColumn(data: T): Option[Array[Byte]]
 }
 
 
