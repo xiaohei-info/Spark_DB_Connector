@@ -16,7 +16,7 @@ trait DataReader[T] extends DataTransformer {
 
 trait SingleColumnDataReader[T] extends DataReader[T] {
 
-  def read(data: HBaseData): T =
+  override def read(data: HBaseData): T =
     if (data.size == 1)
       columnMapWithOption(data.head)
     else if (data.size == 2)
@@ -31,7 +31,7 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
 
   val n: Int
 
-  def read(data: HBaseData): T =
+  override def read(data: HBaseData): T =
     if (data.size == n)
       tupleMap(data)
     else if (data.size == n + 1)
@@ -44,7 +44,7 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
 
 trait SingleColumnConcreteDataReader[T] extends SingleColumnDataReader[T] {
 
-  def columnMapWithOption(cols: Option[Array[Byte]]) =
+  override def columnMapWithOption(cols: Option[Array[Byte]]) =
     if (cols.nonEmpty) columnMap(cols.get)
     else throw new IllegalArgumentException("Null value assigned to concrete class. Use Option[T] instead")
 
