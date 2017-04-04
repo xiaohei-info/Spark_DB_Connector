@@ -14,41 +14,41 @@ trait DataReaderConversions extends Serializable {
   // Simple types
 
   implicit def intReader: DataReader[Int] = new SingleColumnConcreteDataReader[Int] {
-    def columnMap(cols: Array[Byte]): Int = Bytes.toInt(cols)
+    override def columnMap(cols: Array[Byte]): Int = Bytes.toInt(cols)
   }
 
   implicit def longReader: DataReader[Long] = new SingleColumnConcreteDataReader[Long] {
-    def columnMap(cols: Array[Byte]): Long = Bytes.toLong(cols)
+    override def columnMap(cols: Array[Byte]): Long = Bytes.toLong(cols)
   }
 
   implicit def shortReader: DataReader[Short] = new SingleColumnConcreteDataReader[Short] {
-    def columnMap(cols: Array[Byte]): Short = Bytes.toShort(cols)
+    override def columnMap(cols: Array[Byte]): Short = Bytes.toShort(cols)
   }
 
   implicit def doubleReader: DataReader[Double] = new SingleColumnConcreteDataReader[Double] {
-    def columnMap(cols: Array[Byte]): Double = Bytes.toDouble(cols)
+    override def columnMap(cols: Array[Byte]): Double = Bytes.toDouble(cols)
   }
 
   implicit def floatReader: DataReader[Float] = new SingleColumnConcreteDataReader[Float] {
-    def columnMap(cols: Array[Byte]): Float = Bytes.toFloat(cols)
+    override def columnMap(cols: Array[Byte]): Float = Bytes.toFloat(cols)
   }
 
   implicit def booleanReader: DataReader[Boolean] = new SingleColumnConcreteDataReader[Boolean] {
-    def columnMap(cols: Array[Byte]): Boolean = Bytes.toBoolean(cols)
+    override def columnMap(cols: Array[Byte]): Boolean = Bytes.toBoolean(cols)
   }
 
   implicit def bigDecimalReader: DataReader[BigDecimal] = new SingleColumnConcreteDataReader[BigDecimal] {
-    def columnMap(cols: Array[Byte]): BigDecimal = Bytes.toBigDecimal(cols)
+    override def columnMap(cols: Array[Byte]): BigDecimal = Bytes.toBigDecimal(cols)
   }
 
   implicit def stringReader: DataReader[String] = new SingleColumnConcreteDataReader[String] {
-    def columnMap(cols: Array[Byte]): String = Bytes.toString(cols)
+    override def columnMap(cols: Array[Byte]): String = Bytes.toString(cols)
   }
 
   // Options
 
   implicit def optionReader[T](implicit c: DataReader[T]): DataReader[Option[T]] = new DataReader[Option[T]] {
-    def read(data: HBaseData): Option[T] =
+    override def read(data: HBaseData): Option[T] =
       if (data.size != 1) throw new IllegalArgumentException(s"Unexpected number of columns: expected 1, returned ${data.size}")
       else {
         if (!classOf[SingleColumnConcreteDataReader[T]].isAssignableFrom(c.getClass)) throw new IllegalArgumentException("Option[T] can be used only with primitive values")
@@ -63,7 +63,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 2
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       (m1.read(h1), m2.read(h2))
@@ -74,7 +74,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 3
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -86,7 +86,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 4
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -99,7 +99,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 5
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -113,7 +113,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 6
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -128,7 +128,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 7
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -144,7 +144,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 8
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -161,7 +161,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 9
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -179,7 +179,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 10
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -198,7 +198,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 11
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -218,7 +218,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 12
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -239,7 +239,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 13
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -261,7 +261,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 14
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -284,7 +284,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 15
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -308,7 +308,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 16
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -333,7 +333,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 17
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -359,7 +359,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 18
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -386,7 +386,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 19
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -414,7 +414,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 20
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -443,7 +443,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 21
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
@@ -473,7 +473,7 @@ trait DataReaderConversions extends Serializable {
 
     val n = 22
 
-    def tupleMap(data: HBaseData) = {
+    override def tupleMap(data: HBaseData) = {
       val h1 = data.take(1)
       val h2 = data.slice(1, 2)
       val h3 = data.slice(2, 3)
