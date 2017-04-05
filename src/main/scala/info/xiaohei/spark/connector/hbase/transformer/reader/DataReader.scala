@@ -47,6 +47,13 @@ trait TupleDataReader[T <: Product] extends DataReader[T] {
   def readTupleColumn(data: HBaseData): T
 }
 
+abstract class CustomDataReader[S, T](implicit reader: DataReader[S]) extends DataReader[T] {
+
+  override def read(data: HBaseData): T = convert(reader.read(data))
+
+  def convert(data: S): T
+}
+
 //
 //trait SingleColumnDataReader[T] extends DataReader[T] {
 //

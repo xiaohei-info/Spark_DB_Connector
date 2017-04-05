@@ -8,7 +8,7 @@ import info.xiaohei.spark.connector.hbase.transformer.DataTransformer
   * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
-trait DataWriter[T] extends DataTransformer{
+trait DataWriter[T] extends DataTransformer {
   def write(data: T): HBaseData
 }
 
@@ -16,6 +16,13 @@ trait SingleColumnDataWriter[T] extends DataWriter[T] {
   override def write(data: T): HBaseData = Seq(writeSingleColumn(data))
 
   def writeSingleColumn(data: T): Option[Array[Byte]]
+}
+
+abstract class CustomDataWriter[S, T](implicit writer: DataWriter[T]) extends DataWriter[S] {
+
+  override def write(data: S): HBaseData = writer.write(convert(data))
+
+  def convert(data: S): T
 }
 
 
