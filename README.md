@@ -169,12 +169,59 @@ df.registerTempTable("mytable")
 sqlContext.sql("select col1 from mytable").show()
 ```
 
+### 使用case class查询/读取HBase的数据
+
+使用内置的隐式转换可以处理基本数据类型和元组数据,当有使用case class的需求时,需要额外做一些准备工作
+
+定义如下的case class:
+
+```
+case class MyClass(name: String, age: Int)
+```
+
+如果想达到以下的效果:
+
+```
+val classRdd = sc.fromHBase[MyClass]("tableName")
+    .select("name","age")
+    .inColumnFamily("info")
+
+classRdd.map{
+    c =>
+        (c.name,c.age)
+}
+```
+
+或者以下的效果:
+
+```
+//classRdd的类型为RDD[MyClass]
+classRdd.toHBase("tableName")
+    .insert("name","age")
+    .inColumnFamily("info")
+    .save()
+```
+
+需要另外实现能够解析自定义case class的隐式方法:
+
+```
+implicit def MyReaderConversion: DataReader[MyClass] = new CustomDataReader[(String, Int), MyClass] {
+    override def convert(data: (String, Int)): MyClass = MyClass(data._1, data._2)
+  }
+
+implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyClass, (String, Int)] {
+    override def convert(data: MyClass): (String, Int) = (data.name, data.age)
+  }
+```
+
+该隐式方法返回一个DataReader/DataWriter 重写CustomDataReader/CustomDataWriter中的convert方法
+将case class转换为一个元组或者将元组转化为case class即可
 
 ## TODO LIST
 
 - [x] 在hbase-site.xml中设置hbase host并读取
 - [x] 将Scala集合/序列元素写入HBase
-- [ ] 自定义case class的解析
+- [x] 自定义case class的解析
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
 - [x] 添加Mysql的支持
