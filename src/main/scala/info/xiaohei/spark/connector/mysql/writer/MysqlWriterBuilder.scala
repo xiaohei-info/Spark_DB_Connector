@@ -2,7 +2,7 @@ package info.xiaohei.spark.connector.mysql.writer
 
 import java.sql.{DriverManager, PreparedStatement}
 
-import info.xiaohei.spark.connector.mysql.{ConfOption, MysqlConf}
+import info.xiaohei.spark.connector.mysql.MysqlConf
 
 /**
   * Author: xiaohei
