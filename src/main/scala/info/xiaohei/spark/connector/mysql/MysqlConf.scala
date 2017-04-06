@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector
+package info.xiaohei.spark.connector.mysql
 
 import org.apache.spark.SparkContext
 
@@ -19,12 +19,24 @@ object ConfOption extends Enumeration {
   val SPARK_MYSQL_DB = Value("spark.mysql.db")
 }
 
-case class CollectionConf private[connector](conf: Map[String, String] = Map.empty)
+case class MysqlConf(
+                      private val conf: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+                    ) {
 
-object CollectionConf {
-  def createCollectionConf(sc: SparkContext) = {
+
+  def set(key: String, value: String): Unit = {
+    conf += key -> value
+  }
+
+  def get(key: String): Option[String] = {
+    conf.get(key)
+  }
+}
+
+object MysqlConf {
+  private[mysql] def createConfFromSpark(sc: SparkContext) = {
     val sparkConf = sc.getConf
-    val collectionConf = Map[String, String](
+    val collectionConf = collection.mutable.Map[String, String](
       ConfOption.SPARK_HBASE_HOST.toString -> sparkConf.get(ConfOption.SPARK_HBASE_HOST.toString),
       ConfOption.SPARK_MYSQL_HOST.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_HOST.toString),
       ConfOption.SPARK_MYSQL_USERNAME.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_USERNAME.toString),
@@ -32,10 +44,14 @@ object CollectionConf {
       ConfOption.SPARK_MYSQL_PORT.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_PORT.toString, "3306"),
       ConfOption.SPARK_MYSQL_DB.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_DB.toString)
     )
-    CollectionConf(collectionConf)
+    MysqlConf(collectionConf)
+  }
+
+  def createConf() = {
+    MysqlConf()
   }
 }
 
-trait CollectionConfConversions {
-  implicit def scToCollectionConf(implicit sc: SparkContext): CollectionConf = CollectionConf.createCollectionConf(sc)
+trait MysqlConfConversions {
+  implicit def scToCollectionConf(implicit sc: SparkContext): MysqlConf = MysqlConf.createConfFromSpark(sc)
 }

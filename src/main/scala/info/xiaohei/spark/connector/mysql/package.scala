@@ -1,4 +1,4 @@
-package info.xiaohei.spark
+package info.xiaohei.spark.connector
 
 /**
   * Author: xiaohei
@@ -6,4 +6,4 @@ package info.xiaohei.spark
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-package object connector extends CollectionConfConversions
+package object mysql extends MysqlConfConversions
