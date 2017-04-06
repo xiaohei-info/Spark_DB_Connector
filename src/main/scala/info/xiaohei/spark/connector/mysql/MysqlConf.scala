@@ -9,7 +9,7 @@ import org.apache.spark.SparkContext
   * Host: xiaohei.info
   */
 
-object ConfOption extends Enumeration {
+private[mysql] object ConfOption extends Enumeration {
   type ConfOption = Value
   val SPARK_HBASE_HOST = Value("spark.hbase.host")
   val SPARK_MYSQL_HOST = Value("spark.mysql.host")
@@ -19,17 +19,26 @@ object ConfOption extends Enumeration {
   val SPARK_MYSQL_DB = Value("spark.mysql.db")
 }
 
-case class MysqlConf(
-                      private val conf: collection.mutable.Map[String, String] = collection.mutable.Map.empty
-                    ) {
-
-
-  def set(key: String, value: String): Unit = {
-    conf += key -> value
-  }
-
-  def get(key: String): Option[String] = {
-    conf.get(key)
+case class MysqlConf private[mysql](
+                                     private val conf: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+                                   ) {
+  def getMysqlInfo(): (String, String, String) = {
+    require(conf.nonEmpty, "mysql conf must be set")
+    val host = conf.get(ConfOption.SPARK_MYSQL_HOST.toString)
+    val port = conf.get(ConfOption.SPARK_MYSQL_PORT.toString)
+    val db = conf.get(ConfOption.SPARK_MYSQL_DB.toString)
+    val username = conf.get(ConfOption.SPARK_MYSQL_USERNAME.toString)
+    val password = conf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString)
+    val connectStr = s"jdbc:mysql://$host:$port/$db"
+    require(
+      host.isDefined &&
+        port.isDefined &&
+        db.isDefined &&
+        username.isDefined &&
+        password.isDefined,
+      "host/port/dbname/username/password must be set in mysql conf!"
+    )
+    (connectStr, username.get, password.get)
   }
 }
 
@@ -47,7 +56,7 @@ object MysqlConf {
     MysqlConf(collectionConf)
   }
 
-  def createConf() = {
+  def create() = {
     MysqlConf()
   }
 }

@@ -10,7 +10,7 @@ import info.xiaohei.spark.connector.mysql.MysqlConf
   */
 object Test {
   def main(args: Array[String]) {
-    val mysqlConf = MysqlConf.createConf()
+    val mysqlConf = MysqlConf.create()
     mysqlConf.set("","")
 
   }

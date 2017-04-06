@@ -2,6 +2,8 @@ package info.xiaohei.spark.connector.mysql.writer
 
 import java.sql.{DriverManager, PreparedStatement}
 
+import info.xiaohei.spark.connector.mysql.{ConfOption, MysqlConf}
+
 /**
   * Author: xiaohei
   * Date: 2017/3/26
@@ -9,10 +11,6 @@ import java.sql.{DriverManager, PreparedStatement}
   * Host: xiaohei.info
   */
 case class MysqlWriterBuilder[C] private[mysql](
-                                                 //todo:从conf中读取
-                                                 private[mysql] val connectStr: String,
-                                                 private[mysql] val username: String,
-                                                 private[mysql] val password: String,
                                                  private[mysql] val collectionData: Iterable[C],
                                                  //todo:t.productIterator.foreach{ i =>println("Value = " + i )}
                                                  private[mysql] val fitStatement: (PreparedStatement, C) => Unit,
@@ -40,18 +38,17 @@ case class MysqlWriterBuilder[C] private[mysql](
   }
 }
 
-private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
-  def toMysql(connectStr: String,
-              username: String,
-              password: String,
-              fitStatement: (PreparedStatement, C) => Unit) =
-    MysqlWriterBuilder[C](connectStr, username, password, collectionData, fitStatement)
+private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C])
+  extends Serializable {
+  def toMysql(fitStatement: (PreparedStatement, C) => Unit): MysqlWriterBuilder[C] =
+    MysqlWriterBuilder[C](collectionData, fitStatement)
 }
 
-private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])
+private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf)
   extends Serializable {
   def save(): Unit = {
-    val conn = DriverManager.getConnection(builder.connectStr, builder.username, builder.password)
+    val (connectStr, username, password) = mysqlConf.getMysqlInfo()
+    val conn = DriverManager.getConnection(connectStr, username, password)
 
     var placeholder = ""
     //todo:改进
@@ -82,6 +79,6 @@ trait MysqlWriterBuilderConversions extends Serializable {
   implicit def mysqlCollectionToBuildMaker[C](collectionData: Iterable[C])
   : MysqlWriterBuildMaker[C] = new MysqlWriterBuildMaker[C](collectionData)
 
-  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlWriterBuilder[C])
+  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf)
   : MysqlWriter[C] = new MysqlWriter[C](builder)
 }
