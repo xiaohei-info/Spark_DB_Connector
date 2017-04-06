@@ -29,7 +29,7 @@ case class MysqlConf private[mysql](
     val db = conf.get(ConfOption.SPARK_MYSQL_DB.toString)
     val username = conf.get(ConfOption.SPARK_MYSQL_USERNAME.toString)
     val password = conf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString)
-    val connectStr = s"jdbc:mysql://$host:$port/$db"
+    val connectStr = s"jdbc:mysql://${host.get}:${port.get}/${db.get}"
     require(
       host.isDefined &&
         port.isDefined &&
@@ -46,7 +46,7 @@ object MysqlConf {
   def createConfFromSpark(sc: SparkContext) = {
     val sparkConf = sc.getConf
     val collectionConf = collection.mutable.Map[String, String](
-      ConfOption.SPARK_HBASE_HOST.toString -> sparkConf.get(ConfOption.SPARK_HBASE_HOST.toString),
+      //ConfOption.SPARK_HBASE_HOST.toString -> sparkConf.get(ConfOption.SPARK_HBASE_HOST.toString),
       ConfOption.SPARK_MYSQL_HOST.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_HOST.toString),
       ConfOption.SPARK_MYSQL_USERNAME.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_USERNAME.toString),
       ConfOption.SPARK_MYSQL_PASSWORD.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString),
