@@ -11,8 +11,8 @@ import info.xiaohei.spark.connector.mysql.MysqlConf
   * Host: xiaohei.info
   */
 case class MysqlReaderBuilder(
+                               private[mysql] val tableName: String,
                                private[mysql] val columns: Iterable[String] = Seq.empty,
-                               private[mysql] val tableName: Option[String] = None,
                                private[mysql] val whereConditions: Option[String] = None
                              ) {
 
@@ -21,14 +21,6 @@ case class MysqlReaderBuilder(
     require(cols.nonEmpty, "Columns must by set,at least one")
 
     this.copy(columns = cols)
-
-  }
-
-  def from(table: String) = {
-    require(this.tableName.isEmpty, "Default table hasn't been set")
-    require(table.nonEmpty, "Table must provided")
-
-    this.copy(tableName = Some(table))
   }
 
   def where(conditions: String) = {

@@ -11,11 +11,11 @@ import info.xiaohei.spark.connector.mysql.MysqlConf
   * Host: xiaohei.info
   */
 case class MysqlWriterBuilder[C] private[mysql](
+                                                 private[mysql] val tableName: String,
                                                  private[mysql] val collectionData: Iterable[C],
                                                  //todo:t.productIterator.foreach{ i =>println("Value = " + i )}
                                                  private[mysql] val fitStatement: (PreparedStatement, C) => Unit,
                                                  private[mysql] val columns: Iterable[String] = Seq.empty,
-                                                 private[mysql] val tableName: Option[String] = None,
                                                  //todo:完善
                                                  private[mysql] val whereConditions: Option[String] = None
                                                ) {
@@ -26,13 +26,6 @@ case class MysqlWriterBuilder[C] private[mysql](
     this.copy(columns = cols)
   }
 
-  def toTable(table: String) = {
-    require(this.tableName.isEmpty, "Default table hasn't been set")
-    require(table.nonEmpty, "Table must provided")
-
-    this.copy(tableName = Some(table))
-  }
-
   def where(conditions: String) = {
     this.copy(whereConditions = Some(conditions))
   }
@@ -40,8 +33,8 @@ case class MysqlWriterBuilder[C] private[mysql](
 
 private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C])
   extends Serializable {
-  def toMysql(fitStatement: (PreparedStatement, C) => Unit): MysqlWriterBuilder[C] =
-    MysqlWriterBuilder[C](collectionData, fitStatement)
+  def toMysql(tableName: String, fitStatement: (PreparedStatement, C) => Unit): MysqlWriterBuilder[C] =
+    MysqlWriterBuilder[C](tableName, collectionData, fitStatement)
 }
 
 private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf)
