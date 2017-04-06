@@ -46,10 +46,11 @@ private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mys
     var placeholder = ""
     //todo:改进
     for (i <- 0 until builder.columns.size) placeholder += "?,"
-    var sql = s"insert into ${builder.tableName}(${builder.columns.mkString(",")}) values(${placeholder.substring(0, placeholder.length)})"
+    var sql = s"insert into ${builder.tableName}(${builder.columns.mkString(",")}) values(${placeholder.substring(0, placeholder.length - 1)})"
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"
     }
+    println(s"x-->${builder.columns.size}")
     println(s"x-->$sql")
     val ps = conn.prepareStatement(sql)
     Class.forName("com.mysql.jdbc.Driver")
