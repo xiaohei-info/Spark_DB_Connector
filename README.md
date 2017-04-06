@@ -222,10 +222,11 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 - [x] 在hbase-site.xml中设置hbase host并读取
 - [x] 将Scala集合/序列元素写入HBase
 - [x] 自定义case class的解析
+- [x] 添加Mysql的支持
+- [x] Scala集合/序列写入Mysql时从conf中读取连接信息
+- [ ] 测试Mysql部分、补充readme
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
-- [x] 添加Mysql的支持
-- [ ] Scala集合/序列写入Mysql时从conf中读取连接信息
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] 数据转换高级特性/统一接口
 
