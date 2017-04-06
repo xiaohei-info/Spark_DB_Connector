@@ -43,7 +43,7 @@ case class MysqlConf private[mysql](
 }
 
 object MysqlConf {
-  private[mysql] def createConfFromSpark(sc: SparkContext) = {
+  def createConfFromSpark(sc: SparkContext) = {
     val sparkConf = sc.getConf
     val collectionConf = collection.mutable.Map[String, String](
       ConfOption.SPARK_HBASE_HOST.toString -> sparkConf.get(ConfOption.SPARK_HBASE_HOST.toString),
@@ -59,8 +59,4 @@ object MysqlConf {
   def create() = {
     MysqlConf()
   }
-}
-
-trait MysqlConfConversions {
-  implicit def scToCollectionConf(implicit sc: SparkContext): MysqlConf = MysqlConf.createConfFromSpark(sc)
 }
