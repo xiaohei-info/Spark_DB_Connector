@@ -2,6 +2,8 @@ package info.xiaohei.spark.connector.mysql.reader
 
 import java.sql.{DriverManager, ResultSet}
 
+import info.xiaohei.spark.connector.mysql.MysqlConf
+
 /**
   * Author: xiaohei
   * Date: 2017/3/26
@@ -9,9 +11,6 @@ import java.sql.{DriverManager, ResultSet}
   * Host: xiaohei.info
   */
 case class MysqlReaderBuilder(
-                               private[mysql] val connectStr: String,
-                               private[mysql] val username: String,
-                               private[mysql] val password: String,
                                private[mysql] val columns: Iterable[String] = Seq.empty,
                                private[mysql] val tableName: Option[String] = None,
                                private[mysql] val whereConditions: Option[String] = None
@@ -39,8 +38,9 @@ case class MysqlReaderBuilder(
 }
 
 trait MysqlReaderBuilderConversions extends Serializable {
-  implicit def readFromMysql(builder: MysqlReaderBuilder): Option[ResultSet] = {
-    val conn = DriverManager.getConnection(builder.connectStr, builder.username, builder.password)
+  implicit def readFromMysql(builder: MysqlReaderBuilder)(implicit mysqlConf: MysqlConf): Option[ResultSet] = {
+    val (connectStr, username, password) = mysqlConf.getMysqlInfo()
+    val conn = DriverManager.getConnection(connectStr, username, password)
     var sql = s"select ${builder.columns.mkString(",")} from ${builder.tableName}"
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"

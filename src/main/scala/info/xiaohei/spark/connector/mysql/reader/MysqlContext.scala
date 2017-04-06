@@ -9,11 +9,7 @@ import org.apache.spark.SparkContext
   * Host: xiaohei.info
   */
 private[mysql] class MysqlContext(@transient sc: SparkContext) extends Serializable {
-  def fromMysql(
-                 connectStr: String,
-                 username: String,
-                 password: String
-               ): MysqlReaderBuilder = new MysqlReaderBuilder(connectStr, username, password)
+  def fromMysql(): MysqlReaderBuilder = new MysqlReaderBuilder()
 }
 
 trait MysqlConextConversions extends Serializable {
