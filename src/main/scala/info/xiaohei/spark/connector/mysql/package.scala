@@ -11,3 +11,4 @@ import info.xiaohei.spark.connector.mysql.writer.MysqlWriterBuilderConversions
   */
 package object mysql extends MysqlReaderBuilderConversions
   with MysqlWriterBuilderConversions
+  with MysqlConfConversions

@@ -60,3 +60,7 @@ object MysqlConf {
     MysqlConf()
   }
 }
+
+trait MysqlConfConversions {
+  implicit def scToMysqlConf(sc: SparkContext): MysqlConf = MysqlConf.createConfFromSpark(sc)
+}
