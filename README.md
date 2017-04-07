@@ -216,6 +216,96 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 
 该隐式方法返回一个DataReader/DataWriter 重写CustomDataReader/CustomDataWriter中的convert方法
 将case class转换为一个元组或者将元组转化为case class即可
+## MySQL
+
+除了可以将RDD/集合写入HBase之外，还可以在普通的程序中进行MySQL的相关操作
+
+**MySQL操作部分完善中**
+
+### 在conf中设置相关信息
+
+**1、Spark程序中操作**
+
+在SparkConf中设置以下的信息：
+
+```
+sparkConf
+  .set("spark.mysql.host", "your-host")
+  .set("spark.mysql.username", "your-username")
+  .set("spark.mysql.password", "your-passwd")
+  .set("spark.mysql.port", "db-port")
+  .set("spark.mysql.db", "database-name")
+
+//创建MySqlConf的隐式变量
+implicit val mysqlConf = MysqlConf.createConfFromSpark(sc)
+```
+
+关于这个隐式变量的说明：在RDD的foreachPartition或者mapPartitions等操作时，因为涉及到序列化的问题，默认的对MySqlConf的隐式转化操作会出现异常问题，所以需要显示的声明一下这个变量，其他不涉及网络序列化传输的操作可以省略这步
+
+HBase小节中的设置属性的方法在这里也适用
+
+**2、普通程序中操作**
+
+创建MysqlConf，并设置相关属性：
+
+```
+//创建MySqlConf的隐式变量
+implicit val mysqlConf = MysqlConf.create()
+mysqlConf
+  .set("spark.mysql.host", "your-host")
+  .set("spark.mysql.username", "your-username")
+  .set("spark.mysql.password", "your-passwd")
+  .set("spark.mysql.port", "db-port")
+  .set("spark.mysql.db", "database-name")
+```
+
+在普通程序中操作时一定要显示声明MysqlConf这个隐式变量
+
+### 写入MySQL
+
+导入隐式转换：
+
+```
+import info.xiaohei.spark.connector.mysql._
+```
+
+之后任何Iterable类型的数据都可以直接写入MySQL中：
+
+```
+list.toMysql("table-name",
+  (ps, y) => {
+    ps.setString(1, y)
+    ps.executeUpdate()
+  })
+  //插入的列名
+  .insert("columns")
+  //where条件，如age=1
+  .where("where-conditions")
+  .save()
+```
+
+toMysql方法的第二个参数是一个fitStatement函数：
+
+- ps:JDBC中PreparedStatement的变量
+- y:集合中的某一个值
+
+**fitStatement和where条件待完善**
+
+### 从MySQL中读取数据
+
+```
+val res = sc.fromMysql("table-name")
+  .select("columns")
+  .where("where-conditions")
+  .get
+
+//使用JDBC的ResultSet接口处理结果
+while (res.next()) {
+  res.getString("column-name")
+}
+```
+
+当前仅支持在Spark程序中读取MySQL的数据，普通程序的部分待完成
 
 ## TODO LIST
 
@@ -224,10 +314,11 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 - [x] 自定义case class的解析
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
-- [ ] 测试Mysql部分、补充readme
 - [ ] Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
+- [ ] Mysql操作时where条件的操作优化
+- [ ] Mysql读取数据时添加对普通程序的支持
 - [ ] 数据转换高级特性/统一接口
 
 
