@@ -40,6 +40,11 @@ case class MysqlConf private[mysql](
     )
     (connectStr, username.get, password.get)
   }
+
+  def set(key: String, value: String): MysqlConf = {
+    conf += key -> value
+    this.copy(conf = conf)
+  }
 }
 
 object MysqlConf {
