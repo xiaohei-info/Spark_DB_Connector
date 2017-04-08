@@ -15,7 +15,7 @@ import scala.collection.JavaConversions._
   */
 
 case class CollectionWriterBuilder[C] private[hbase](
-                                                      private[hbase] val hbaseHost: String,
+                                                      private[hbase] val hBaseConf: HBaseConf,
                                                       private[hbase] val collectionData: Iterable[C],
                                                       private[hbase] val tableName: String,
                                                       private[hbase] val autoFlush: Option[(Boolean, Boolean)],
@@ -37,18 +37,18 @@ case class CollectionWriterBuilder[C] private[hbase](
 }
 
 //todo:collectionData implicit
-private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C]) extends Serializable {
-  def toHBase(hbaseHost: String
-              , tableName: String
+private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf) extends Serializable {
+  def toHBase(tableName: String
               , autoFlush: Option[(Boolean, Boolean)] = None
               , writeBufferSize: Option[Long] = None)
-  = CollectionWriterBuilder[C](hbaseHost, collectionData, tableName, autoFlush, writeBufferSize)
+  = CollectionWriterBuilder[C](hBaseConf, collectionData, tableName, autoFlush, writeBufferSize)
 }
 
 //todo:trait
 private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
   def save(): Unit = {
-    val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
+    //val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
+    val conf = builder.hBaseConf.createHadoopBaseConf()
 
     val table = new HTable(conf, builder.tableName)
     //true为批量写,false为多线程并发写
@@ -101,7 +101,7 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
 
 
 trait CollectionWriterBuilderConversions extends Serializable {
-  implicit def collectionToBuildMaker[C](collectionData: Iterable[C]): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
+  implicit def collectionToBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
 
   //todo:不可以重名
   implicit def collectionBuilderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
