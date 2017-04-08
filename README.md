@@ -92,19 +92,23 @@ val dataList  = Seq[(String, String)](
 
     )
 
-dataList.toHBase("your-hbase-host", "mytable")
+//创建隐式变量
+implicit val hbaseConf = HBaseConf.createHBaseConf("hbase-host")
+//如果实在spark程序操作可以通过以下的方式
+implicit val hbaseConf = HBaseConf.fromSpark(sc)
+
+dataList.toHBase("mytable")
 	.insert("col1", "col2")
 	.inColumnFamily("columnFamily")
 	.save()
 ```
 
-使用方式和RDD写入HBase的操作类似，唯一不同的是需要额外指定hbase host的值（此处待完善）
+使用方式和RDD写入HBase的操作类似，**注意,隐式变量不能在spark的foreachPartition等算子中定义**
 
 以上的方式将使用HTable的put list批量将集合中的数据一次全部put到HBase中，如果写入HBase时想使用缓存区的方式，需要另外添加几个参数：
 
 ```
-dataList.toHBase("your-hbase-host"
-      , "mytable"
+dataList.toHBase("mytable"
       //该参数指定写入时的autoFlush为false
       , Some(false, false)
       //该参数指定写入缓冲区的大小
@@ -314,7 +318,7 @@ while (res.next()) {
 - [x] 自定义case class的解析
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
-- [ ] Scala集合/序列写入HBase时隐式读取hbase host
+- [ ] 测试Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] Mysql操作时where条件的操作优化
