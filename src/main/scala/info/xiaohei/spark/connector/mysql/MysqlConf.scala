@@ -41,6 +41,7 @@ case class MysqlConf private[mysql](
     (connectStr, username.get, password.get)
   }
 
+  //todo:大量连接的情况下是否有隐患
   def set(key: String, value: String): MysqlConf = {
     conf += key -> value
     this.copy(conf = conf)
@@ -50,19 +51,30 @@ case class MysqlConf private[mysql](
 object MysqlConf {
   def createConfFromSpark(sc: SparkContext) = {
     val sparkConf = sc.getConf
-    val collectionConf = collection.mutable.Map[String, String](
-      //ConfOption.SPARK_HBASE_HOST.toString -> sparkConf.get(ConfOption.SPARK_HBASE_HOST.toString),
-      ConfOption.SPARK_MYSQL_HOST.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_HOST.toString),
-      ConfOption.SPARK_MYSQL_USERNAME.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_USERNAME.toString),
-      ConfOption.SPARK_MYSQL_PASSWORD.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString),
-      ConfOption.SPARK_MYSQL_PORT.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_PORT.toString, "3306"),
-      ConfOption.SPARK_MYSQL_DB.toString -> sparkConf.get(ConfOption.SPARK_MYSQL_DB.toString)
+    create(
+      sparkConf.get(ConfOption.SPARK_MYSQL_HOST.toString),
+      sparkConf.get(ConfOption.SPARK_MYSQL_USERNAME.toString),
+      sparkConf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString),
+      sparkConf.get(ConfOption.SPARK_MYSQL_PORT.toString, "3306"),
+      sparkConf.get(ConfOption.SPARK_MYSQL_DB.toString)
     )
-    MysqlConf(collectionConf)
   }
 
-  def create() = {
-    MysqlConf()
+  def create(
+              host: String,
+              username: String,
+              passwword: String,
+              port: String,
+              dbName: String
+            ) = {
+    val collectionConf = collection.mutable.Map[String, String](
+      ConfOption.SPARK_MYSQL_HOST.toString -> host,
+      ConfOption.SPARK_MYSQL_USERNAME.toString -> username,
+      ConfOption.SPARK_MYSQL_PASSWORD.toString -> passwword,
+      ConfOption.SPARK_MYSQL_PORT.toString -> port,
+      ConfOption.SPARK_MYSQL_DB.toString -> dbName
+    )
+    MysqlConf(collectionConf)
   }
 }
 
