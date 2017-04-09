@@ -93,9 +93,9 @@ val dataList  = Seq[(String, String)](
     )
 
 //创建隐式变量
-implicit val hbaseConf = HBaseConf.createHBaseConf("hbase-host")
+implicit val hbaseConf = HBaseConf.createConf("hbase-host")
 //如果实在spark程序操作可以通过以下的方式
-implicit val hbaseConf = HBaseConf.fromSpark(sc)
+implicit val hbaseConf = HBaseConf.createFromSpark(sc)
 
 dataList.toHBase("mytable")
 	.insert("col1", "col2")
@@ -241,7 +241,7 @@ sparkConf
   .set("spark.mysql.db", "database-name")
 
 //创建MySqlConf的隐式变量
-implicit val mysqlConf = MysqlConf.createConfFromSpark(sc)
+implicit val mysqlConf = MysqlConf.createFromSpark(sc)
 ```
 
 关于这个隐式变量的说明：在RDD的foreachPartition或者mapPartitions等操作时，因为涉及到序列化的问题，默认的对MySqlConf的隐式转化操作会出现异常问题，所以需要显示的声明一下这个变量，其他不涉及网络序列化传输的操作可以省略这步
@@ -254,13 +254,14 @@ HBase小节中的设置属性的方法在这里也适用
 
 ```
 //创建MySqlConf的隐式变量
-implicit val mysqlConf = MysqlConf.create()
-mysqlConf
-  .set("spark.mysql.host", "your-host")
-  .set("spark.mysql.username", "your-username")
-  .set("spark.mysql.password", "your-passwd")
-  .set("spark.mysql.port", "db-port")
-  .set("spark.mysql.db", "database-name")
+implicit val mysqlConf = MysqlConf.createConf(
+      "your-host",
+      "username",
+      "password",
+      "port",
+      "db-name"
+    )
+
 ```
 
 在普通程序中操作时一定要显示声明MysqlConf这个隐式变量
@@ -318,11 +319,9 @@ while (res.next()) {
 - [x] 自定义case class的解析
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
-- [ ] 测试Scala集合/序列写入HBase时隐式读取hbase host
 - [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] Mysql操作时where条件的操作优化
-- [ ] Mysql读取数据时添加对普通程序的支持
 - [ ] 数据转换高级特性/统一接口
 
 
