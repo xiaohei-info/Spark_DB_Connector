@@ -33,13 +33,13 @@ object HBaseConf {
 
   val defaultHBaseHost = "localhost"
 
-  def fromSpark(conf: SparkConf) = {
+  def createFromSpark(conf: SparkConf) = {
     val hbaseHost = conf.get("spark.hbase.host", null)
     val hbaseConfig = conf.get("spark.hbase.config", "hbase-site.xml")
     HBaseConf(Option(hbaseHost), hbaseConfig)
   }
 
-  def createHBaseConf(hbaseHost: String) = {
+  def createConf(hbaseHost: String) = {
     HBaseConf(Option(hbaseHost))
   }
 }

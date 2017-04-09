@@ -49,9 +49,9 @@ case class MysqlConf private[mysql](
 }
 
 object MysqlConf {
-  def createConfFromSpark(sc: SparkContext) = {
+  def createFromSpark(sc: SparkContext) = {
     val sparkConf = sc.getConf
-    create(
+    createConf(
       sparkConf.get(ConfOption.SPARK_MYSQL_HOST.toString),
       sparkConf.get(ConfOption.SPARK_MYSQL_USERNAME.toString),
       sparkConf.get(ConfOption.SPARK_MYSQL_PASSWORD.toString),
@@ -60,7 +60,7 @@ object MysqlConf {
     )
   }
 
-  def create(
+  def createConf(
               host: String,
               username: String,
               passwword: String,
@@ -79,5 +79,5 @@ object MysqlConf {
 }
 
 trait MysqlConfConversions {
-  implicit def scToMysqlConf(sc: SparkContext): MysqlConf = MysqlConf.createConfFromSpark(sc)
+  implicit def scToMysqlConf(sc: SparkContext): MysqlConf = MysqlConf.createFromSpark(sc)
 }

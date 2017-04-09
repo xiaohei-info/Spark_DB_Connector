@@ -43,7 +43,7 @@ private[hbase] class HBaseWriterBuildMaker[R](rdd: RDD[R]) extends Serializable 
 
 private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]) extends Serializable {
   def save(): Unit = {
-    val conf = HBaseConf.fromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
+    val conf = HBaseConf.createFromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)
 
     val job = Job.getInstance(conf)

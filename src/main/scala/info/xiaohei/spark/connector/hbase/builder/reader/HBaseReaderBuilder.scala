@@ -51,7 +51,7 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
 
 trait HBaseReaderBuilderConversions extends Serializable {
   implicit def toHBaseRDD[R: ClassTag](builder: HBaseReaderBuilder[R])(implicit reader: DataReader[R]): RDD[R] = {
-    val hbaseConfig = HBaseConf.fromSpark(builder.sc.getConf).createHadoopBaseConf()
+    val hbaseConfig = HBaseConf.createFromSpark(builder.sc.getConf).createHadoopBaseConf()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, builder.tableName)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
     val columnNames = builder.columns
