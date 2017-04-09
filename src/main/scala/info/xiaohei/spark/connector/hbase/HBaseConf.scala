@@ -10,7 +10,7 @@ import org.apache.spark.SparkConf
   * Host: www.xiaohei.info
   */
 
-private[hbase] case class HBaseConf(hbaseHost: Option[String] = None
+case class HBaseConf private[hbase](hbaseHost: Option[String] = None
                                     , hbaseConfig: String = "hbase-site.xml") {
   def createHadoopBaseConf() = {
     val conf = HBaseConfiguration.create()
