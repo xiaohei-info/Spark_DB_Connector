@@ -296,7 +296,7 @@ toMysql方法的第二个参数是一个fitStatement函数：
 
 **fitStatement和where条件待完善**
 
-### 从MySQL中读取数据
+### 在Spark程序中从MySQL读取数据
 
 ```
 val res = sc.fromMysql("table-name")
@@ -310,7 +310,19 @@ while (res.next()) {
 }
 ```
 
-当前仅支持在Spark程序中读取MySQL的数据，普通程序的部分待完成
+### 在普通程序中从MySQL读取数据
+
+```
+//普通程序读取关系型数据库入口
+val dbEntry = new RelationalDbEntry
+
+dbEntry.fromMysql("table-name")
+  .select("columns")
+  .where("where-conditions")
+  .get
+```
+
+创建数据库入口之后的操作和spark中的流程一致
 
 ## TODO LIST
 
@@ -319,6 +331,7 @@ while (res.next()) {
 - [x] 自定义case class的解析
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
+- [x] 为普通程序读取mysql时提供入口
 - [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] Mysql操作时where条件的操作优化
