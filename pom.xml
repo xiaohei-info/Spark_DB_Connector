@@ -146,42 +146,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <!--========================================================Fuge Maven Repository-->
-    <repositories>
-        <repository>
-            <id>thirdparty</id>
-            <name>FugeTech Maven Official Repository</name>
-            <url>http://maven.fugetech.com/content/groups/fuge/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>offical</id>
-            <name>Maven Official Repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <!--<repository>-->
-        <!--<id>fuge_release</id>-->
-        <!--<url>http://maven.fugetech.com/content/repositories/fuge_release</url>-->
-        <!--</repository>-->
-
-        <repository>
-            <id>fuge_snapshots</id>
-            <url>http://maven.fugetech.com/content/repositories/fuge_snapshots</url>
-        </repository>
-
-        <!--<snapshotRepository>-->
-        <!--<id>fuge_snapshots</id>-->
-        <!--<url>http://maven.fugetech.com/content/repositories/fuge_snapshots</url>-->
-        <!--</snapshotRepository>-->
-    </distributionManagement>
-
 </project>
