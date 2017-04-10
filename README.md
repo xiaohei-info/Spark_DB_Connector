@@ -1,6 +1,11 @@
-# Spark Database Conntector
+# Spark Database Connector
 
 隐藏处理各种数据库的连接细节，使用Scala API在Spark中简易地处理数据库连接的读写操作。
+
+目前支持的有:
+
+- HBase
+- MySQL
 
 ## HBase
 
@@ -332,8 +337,10 @@ dbEntry.fromMysql("table-name")
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
 - [x] 为普通程序读取mysql时提供入口
+- [ ] mysql:insert into table values()
 - [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
+- [ ] 读取Mysql数据时ResultSet的处理
 - [ ] Mysql操作时where条件的操作优化
 - [ ] 数据转换高级特性/统一接口
 
