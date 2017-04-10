@@ -1,5 +1,6 @@
 package info.xiaohei.spark.connector.mysql.reader
 
+import info.xiaohei.spark.connector.RelationalDbEntry
 import org.apache.spark.SparkContext
 
 /**
@@ -8,10 +9,12 @@ import org.apache.spark.SparkContext
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-private[mysql] class MysqlContext(@transient sc: SparkContext) extends Serializable {
+private[mysql] class MysqlContext() extends Serializable {
   def fromMysql(tableName: String): MysqlReaderBuilder = new MysqlReaderBuilder(tableName)
 }
 
-trait MysqlConextConversions extends Serializable {
-  implicit def toMysqlContext(sc: SparkContext): MysqlContext = new MysqlContext(sc)
+trait MysqlCoontextConversions extends Serializable {
+  implicit def scToMysqlContext(sc: SparkContext): MysqlContext = new MysqlContext()
+
+  implicit def entryToMysqlContext(entry: RelationalDbEntry): MysqlContext = new MysqlContext()
 }
