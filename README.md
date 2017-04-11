@@ -337,11 +337,11 @@ dbEntry.fromMysql("table-name")
 - [x] 添加Mysql的支持
 - [x] Scala集合/序列写入Mysql时从conf中读取连接信息
 - [x] 为普通程序读取mysql时提供入口
-- [ ] mysql:insert into table values()
-- [ ] 读写HBase时添加salt特性
 - [ ] 写入Mysql时fitStatement隐式完成
 - [ ] 读取Mysql数据时ResultSet的处理
+- [ ] mysql:insert into table values()
 - [ ] Mysql操作时where条件的操作优化
+- [ ] 读写HBase时添加salt特性
 - [ ] 数据转换高级特性/统一接口
 
 
