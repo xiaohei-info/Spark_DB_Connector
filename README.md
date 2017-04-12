@@ -329,19 +329,3 @@ dbEntry.fromMysql("table-name")
 
 创建数据库入口之后的操作和spark中的流程一致
 
-## TODO LIST
-
-- [x] 在hbase-site.xml中设置hbase host并读取
-- [x] 将Scala集合/序列元素写入HBase
-- [x] 自定义case class的解析
-- [x] 添加Mysql的支持
-- [x] Scala集合/序列写入Mysql时从conf中读取连接信息
-- [x] 为普通程序读取mysql时提供入口
-- [ ] 写入Mysql时fitStatement隐式完成
-- [ ] 读取Mysql数据时ResultSet的处理
-- [ ] mysql:insert into table values()
-- [ ] Mysql操作时where条件的操作优化
-- [ ] 读写HBase时添加salt特性
-- [ ] 数据转换高级特性/统一接口
-
-
