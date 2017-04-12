@@ -78,6 +78,6 @@ object MysqlConf {
   }
 }
 
-trait MysqlConfConversions {
+trait MysqlConfConversions extends Serializable{
   implicit def scToMysqlConf(sc: SparkContext): MysqlConf = MysqlConf.createFromSpark(sc)
 }

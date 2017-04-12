@@ -6,6 +6,6 @@ package info.xiaohei.spark.connector
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-class RelationalDbEntry {
+class RelationalDbEntry extends Serializable{
 
 }
