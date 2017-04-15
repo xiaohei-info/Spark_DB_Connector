@@ -229,8 +229,6 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 
 除了可以将RDD/集合写入HBase之外，还可以在普通的程序中进行MySQL的相关操作
 
-**MySQL操作部分完善中**
-
 ### 在conf中设置相关信息
 
 **1、Spark程序中操作**
@@ -282,11 +280,7 @@ import info.xiaohei.spark.connector.mysql._
 之后任何Iterable类型的数据都可以直接写入MySQL中：
 
 ```
-list.toMysql("table-name",
-  (ps, y) => {
-    ps.setString(1, y)
-    ps.executeUpdate()
-  })
+list.toMysql("table-name")
   //插入的列名
   .insert("columns")
   //where条件，如age=1
@@ -294,12 +288,6 @@ list.toMysql("table-name",
   .save()
 ```
 
-toMysql方法的第二个参数是一个fitStatement函数：
-
-- ps:JDBC中PreparedStatement的变量
-- y:集合中的某一个值
-
-**fitStatement和where条件待完善**
 
 ### 在Spark程序中从MySQL读取数据
 
