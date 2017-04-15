@@ -50,8 +50,6 @@ private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mys
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"
     }
-    println(s"x-->${builder.columns.size}")
-    println(s"x-->$sql")
     val ps = conn.prepareStatement(sql)
     Class.forName("com.mysql.jdbc.Driver")
     try {
