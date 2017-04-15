@@ -71,6 +71,6 @@ trait MysqlWriterBuilderConversions extends Serializable {
   implicit def mysqlCollectionToBuildMaker[C](collectionData: Iterable[C])
   : MysqlWriterBuildMaker[C] = new MysqlWriterBuildMaker[C](collectionData)
 
-  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf)
+  implicit def mysqlCollectionBuilderToWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf, dataExecutor: DataExecutor[C])
   : MysqlWriter[C] = new MysqlWriter[C](builder)
 }
