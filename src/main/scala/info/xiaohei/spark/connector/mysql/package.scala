@@ -1,7 +1,7 @@
 package info.xiaohei.spark.connector
 
 import info.xiaohei.spark.connector.mysql.reader.{MysqlCoontextConversions, MysqlReaderBuilderConversions}
-import info.xiaohei.spark.connector.mysql.transformer.writer.DataExecutorConversions
+import info.xiaohei.spark.connector.mysql.transformer.executor.DataExecutorConversions
 import info.xiaohei.spark.connector.mysql.writer.MysqlWriterBuilderConversions
 
 /**

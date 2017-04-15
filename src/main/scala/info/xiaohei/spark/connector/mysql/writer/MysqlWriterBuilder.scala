@@ -3,7 +3,7 @@ package info.xiaohei.spark.connector.mysql.writer
 import java.sql.{DriverManager, PreparedStatement}
 
 import info.xiaohei.spark.connector.mysql.MysqlConf
-import info.xiaohei.spark.connector.mysql.transformer.writer.DataExecutor
+import info.xiaohei.spark.connector.mysql.transformer.executor.DataExecutor
 
 /**
   * Author: xiaohei

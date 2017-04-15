@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.mysql.transformer.writer
+package info.xiaohei.spark.connector.mysql.transformer.executor
 
 import java.sql.PreparedStatement
 
