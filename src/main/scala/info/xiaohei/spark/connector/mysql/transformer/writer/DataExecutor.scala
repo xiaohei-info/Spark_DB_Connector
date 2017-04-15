@@ -11,7 +11,7 @@ import com.mysql.jdbc.PreparedStatement
 trait DataExecutor[T] extends Serializable {
   var ps: PreparedStatement = _
 
-  protected var index: Int
+  protected var index: Int = 1
 
   def prepare(data: T): PreparedStatement
 
