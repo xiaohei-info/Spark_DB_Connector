@@ -10,7 +10,7 @@ import java.sql.PreparedStatement
   * Host: xiaohei.info
   */
 trait DataExecutor[T] extends Serializable {
-  protected var index: Int = 1
+  var index: Int = 1
 
   def prepare(ps: PreparedStatement, data: T): Unit
 
