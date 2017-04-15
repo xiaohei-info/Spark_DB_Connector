@@ -13,7 +13,12 @@ trait DataExecutor[T] extends Serializable {
 
   protected var index: Int
 
-  def execute(data: T): PreparedStatement
+  def prepare(data: T): PreparedStatement
+
+  def execute(data: T): Unit = {
+    prepare(data)
+    ps.executeUpdate()
+  }
 }
 
 //trait SingleColumnDataWriter[T] extends DataWriter[T] {
