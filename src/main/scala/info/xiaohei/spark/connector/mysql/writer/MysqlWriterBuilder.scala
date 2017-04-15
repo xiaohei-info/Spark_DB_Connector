@@ -3,6 +3,7 @@ package info.xiaohei.spark.connector.mysql.writer
 import java.sql.{DriverManager, PreparedStatement}
 
 import info.xiaohei.spark.connector.mysql.MysqlConf
+import info.xiaohei.spark.connector.mysql.transformer.writer.DataExecutor
 
 /**
   * Author: xiaohei
@@ -14,7 +15,6 @@ case class MysqlWriterBuilder[C] private[mysql](
                                                  private[mysql] val tableName: String,
                                                  private[mysql] val collectionData: Iterable[C],
                                                  //todo:t.productIterator.foreach{ i =>println("Value = " + i )}
-                                                 private[mysql] val fitStatement: (PreparedStatement, C) => Unit,
                                                  private[mysql] val columns: Iterable[String] = Seq.empty,
                                                  //todo:完善
                                                  private[mysql] val whereConditions: Option[String] = None
@@ -33,11 +33,11 @@ case class MysqlWriterBuilder[C] private[mysql](
 
 private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C])
   extends Serializable {
-  def toMysql(tableName: String, fitStatement: (PreparedStatement, C) => Unit): MysqlWriterBuilder[C] =
-    MysqlWriterBuilder[C](tableName, collectionData, fitStatement)
+  def toMysql(tableName: String): MysqlWriterBuilder[C] =
+    MysqlWriterBuilder[C](tableName, collectionData)
 }
 
-private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf)
+private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf, dataExecutor: DataExecutor[C])
   extends Serializable {
   def save(): Unit = {
     val (connectStr, username, password) = mysqlConf.getMysqlInfo()
@@ -53,7 +53,7 @@ private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mys
     val ps = conn.prepareStatement(sql)
     Class.forName("com.mysql.jdbc.Driver")
     try {
-      builder.collectionData.foreach(x => builder.fitStatement(ps, x))
+      builder.collectionData.foreach(x => dataExecutor.execute(ps, x))
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
