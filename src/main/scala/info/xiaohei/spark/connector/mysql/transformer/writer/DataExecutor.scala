@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.mysql.transformer.writer
 
-import com.mysql.jdbc.PreparedStatement
+import java.sql.PreparedStatement
+
 
 /**
   * Author: xiaohei
@@ -9,14 +10,13 @@ import com.mysql.jdbc.PreparedStatement
   * Host: xiaohei.info
   */
 trait DataExecutor[T] extends Serializable {
-  var ps: PreparedStatement = _
-
   protected var index: Int = 1
 
-  def prepare(data: T): PreparedStatement
+  def prepare(ps: PreparedStatement, data: T): Unit
 
-  def execute(data: T): Unit = {
-    prepare(data)
+  //todo:ps传递方式
+  def execute(ps: PreparedStatement, data: T): Unit = {
+    prepare(ps, data)
     ps.executeUpdate()
   }
 }
