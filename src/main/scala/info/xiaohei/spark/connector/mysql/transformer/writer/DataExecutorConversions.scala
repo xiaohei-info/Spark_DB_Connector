@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.mysql.transformer.writer
 
-import com.mysql.jdbc.PreparedStatement
+import java.sql.PreparedStatement
+
 
 /**
   * Author: xiaohei
@@ -10,65 +11,57 @@ import com.mysql.jdbc.PreparedStatement
   */
 trait DataExecutorConversions extends Serializable {
   implicit def intExecutor: DataExecutor[Int] = new DataExecutor[Int] {
-    override def prepare(data: Int): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Int): Unit = {
       ps.setInt(index, data)
-      ps
     }
   }
 
   implicit def longExecutor: DataExecutor[Long] = new DataExecutor[Long] {
-    override def prepare(data: Long): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Long): Unit = {
       ps.setLong(index, data)
-      ps
     }
   }
 
   implicit def shortExecutor: DataExecutor[Short] = new DataExecutor[Short] {
-    override def prepare(data: Short): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Short): Unit = {
       ps.setShort(index, data)
-      ps
     }
   }
 
   implicit def doubleExecutor: DataExecutor[Double] = new DataExecutor[Double] {
-    override def prepare(data: Double): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Double): Unit = {
       ps.setDouble(index, data)
-      ps
     }
   }
 
   implicit def floatExecutor: DataExecutor[Float] = new DataExecutor[Float] {
-    override def prepare(data: Float): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Float): Unit = {
       ps.setFloat(index, data)
-      ps
     }
   }
 
   implicit def booleanExecutor: DataExecutor[Boolean] = new DataExecutor[Boolean] {
-    override def prepare(data: Boolean): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: Boolean): Unit = {
       ps.setBoolean(index, data)
-      ps
     }
   }
 
   implicit def bigDecimalExecutor: DataExecutor[java.math.BigDecimal] = new DataExecutor[java.math.BigDecimal] {
-    override def prepare(data: java.math.BigDecimal): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: java.math.BigDecimal): Unit = {
       ps.setBigDecimal(index, data)
-      ps
     }
   }
 
   implicit def stringExecutor: DataExecutor[String] = new DataExecutor[String] {
-    override def prepare(data: String): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: String): Unit = {
       ps.setString(index, data)
-      ps
     }
   }
 
   // todo:Options的空值处理
 
   //  implicit def optionWriter[T](implicit executor: DataExecutor[T]): DataExecutor[Option[T]] = new DataExecutor[Option[T]] {
-  //    override def prepare(data: Option[T]): PreparedStatement = {
+  //    override def prepare(ps: PreparedStatement,data: Option[T]): Unit = {
   //      if (data.nonEmpty) {
   //        executor.prepare(data.get)
   //      } else {
@@ -81,22 +74,22 @@ trait DataExecutorConversions extends Serializable {
 
   //todo:index的设置方式
   implicit def tupleExecutor2[T1, T2](implicit e1: DataExecutor[T1], e2: DataExecutor[T2]): DataExecutor[(T1, T2)] = new DataExecutor[(T1, T2)] {
-    override def prepare(data: (T1, T2)): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: (T1, T2)): Unit = {
       e1.index = 1
-      e1.prepare(data._1)
+      e1.prepare(ps, data._1)
       e2.index = 2
-      e2.prepare(data._2)
+      e2.prepare(ps, data._2)
     }
   }
 
   implicit def tupleExecutor3[T1, T2, T3](implicit e1: DataExecutor[T1], e2: DataExecutor[T2], e3: DataExecutor[T3]): DataExecutor[(T1, T2, T3)] = new DataExecutor[(T1, T2, T3)] {
-    override def prepare(data: (T1, T2, T3)): PreparedStatement = {
+    override def prepare(ps: PreparedStatement, data: (T1, T2, T3)): Unit = {
       e1.index = 1
-      e1.prepare(data._1)
+      e1.prepare(ps, data._1)
       e2.index = 2
-      e2.prepare(data._2)
+      e2.prepare(ps, data._2)
       e3.index = 3
-      e3.prepare(data._3)
+      e3.prepare(ps, data._3)
     }
   }
 }
