@@ -25,6 +25,5 @@ object Test {
     list.toHBase("")
       .insert("")
       .inColumnFamily("")
-      .save()
   }
 }
