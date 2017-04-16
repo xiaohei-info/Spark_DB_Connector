@@ -1,9 +1,9 @@
 package info.xiaohei.spark.connector
 
-import info.xiaohei.spark.connector.mysql.reader.{MysqlContextConversions, MysqlReaderBuilderConversions}
+import info.xiaohei.spark.connector.mysql.builder.reader.{MysqlContextConversions, MysqlReaderBuilderConversions}
 import info.xiaohei.spark.connector.mysql.transformer.executor.DataExecutorConversions
 import info.xiaohei.spark.connector.mysql.transformer.mapper.DataMapperConversions
-import info.xiaohei.spark.connector.mysql.writer.MysqlWriterBuilderConversions
+import info.xiaohei.spark.connector.mysql.builder.writer.MysqlWriterBuilderConversions
 
 /**
   * Author: xiaohei

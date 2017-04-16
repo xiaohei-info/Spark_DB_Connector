@@ -1,7 +1,6 @@
 package info.xiaohei.spark.connector.test
 
-import info.xiaohei.spark.connector.hbase._
-import info.xiaohei.spark.connector.mysql.MysqlConf
+import info.xiaohei.spark.connector.RelationalDbEntry
 import info.xiaohei.spark.connector.mysql._
 
 /**
@@ -20,13 +19,11 @@ object Test {
       "3306",
       "its"
     )
-    implicit val hBaseConf = HBaseConf.createConf("localhost")
+    val entry = new RelationalDbEntry
+    val res = entry.fromMysql[(Int, String, Int)]("test")
+      .select("id", "name", "age")
+      .get
+    res.foreach(x => println(s"id:${x._1},name:${x._2},age:${x._3}"))
 
-    val list = Seq[(String, Int)](
-      ("xiaohei", 24)
-    )
-    list.toMysql("test")
-      .insert("name", "age")
-      .save()
   }
 }

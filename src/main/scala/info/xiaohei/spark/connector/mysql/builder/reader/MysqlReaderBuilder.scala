@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.mysql.reader
+package info.xiaohei.spark.connector.mysql.builder.reader
 
 import java.sql.DriverManager
 

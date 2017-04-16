@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.mysql.reader
+package info.xiaohei.spark.connector.mysql.builder.reader
 
 import info.xiaohei.spark.connector.RelationalDbEntry
 import org.apache.spark.SparkContext

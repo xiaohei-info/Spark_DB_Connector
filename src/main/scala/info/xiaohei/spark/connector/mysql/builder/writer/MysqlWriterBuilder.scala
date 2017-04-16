@@ -1,4 +1,4 @@
-package info.xiaohei.spark.connector.mysql.writer
+package info.xiaohei.spark.connector.mysql.builder.writer
 
 import java.sql.{DriverManager, PreparedStatement}
 
