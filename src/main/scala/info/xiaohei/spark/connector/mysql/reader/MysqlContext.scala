@@ -10,10 +10,10 @@ import org.apache.spark.SparkContext
   * Host: xiaohei.info
   */
 private[mysql] class MysqlContext() extends Serializable {
-  def fromMysql(tableName: String): MysqlReaderBuilder = new MysqlReaderBuilder(tableName)
+  def fromMysql[T](tableName: String): MysqlReaderBuilder[T] = new MysqlReaderBuilder[T](tableName)
 }
 
-trait MysqlCoontextConversions extends Serializable {
+trait MysqlContextConversions extends Serializable {
   implicit def scToMysqlContext(sc: SparkContext): MysqlContext = new MysqlContext()
 
   implicit def entryToMysqlContext(entry: RelationalDbEntry): MysqlContext = new MysqlContext()
