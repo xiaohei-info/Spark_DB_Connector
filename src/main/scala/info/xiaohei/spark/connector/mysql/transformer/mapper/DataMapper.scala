@@ -13,3 +13,4 @@ trait DataMapper[T] extends Serializable {
 
   def map(resultSet: ResultSet): T
 }
+
