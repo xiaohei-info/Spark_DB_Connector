@@ -15,13 +15,13 @@
 
 **1、在spark-submit中设置命令：**
 
-```
+```shell
 spark-submit --conf spark.hbase.host=your-hbase-host
 ```
 
 **2、在Scala代码中设置：**
 
-```
+```scala
 val sparkConf = new SparkConf()
 sparkConf.set("spark.hbase.host", "your-hbase-host")
 val sc = new SparkContext(sparkConf)
@@ -29,7 +29,7 @@ val sc = new SparkContext(sparkConf)
 
 **3、在JVM参数中设置：**
 
-```
+```shell
 java -Dspark.hbase.host=your-hbase-host -jar ....
 ```
 
@@ -37,7 +37,7 @@ java -Dspark.hbase.host=your-hbase-host -jar ....
 
 如果有读取hbase-site.xml文件的需求时,可以通过设置下面的选项进行指定:
 
-```
+```shell
 spark.hbase.config=your-hbase-config-path
 ```
 
@@ -48,7 +48,7 @@ spark.hbase.config=your-hbase-config-path
 
 **导入隐式转换：**
 
-```
+```scala
 import info.xiaohei.spark.connector.hbase._
 ```
 
@@ -56,14 +56,14 @@ import info.xiaohei.spark.connector.hbase._
 
 任何Spark RDD对象都能直接操作写入HBase，例如：
 
-```
+```scala
 val rdd = sc.parallelize(1 to 100)
             .map(i => (s"rowkey-${i.toString}", s"column1-${i.toString}", "column2"))
 ```
 
 这个RDD包含了100个三元组类型的数据，写入HBase时，第一个元素为rowkey，剩下的元素依次为各个列的值：
 
-```
+```scala
 rdd.toHBase("mytable")
       .insert("col1", "col2")
       .inColumnFamily("columnFamily")
@@ -77,7 +77,7 @@ rdd.toHBase("mytable")
 
 如果col2和col1的列族不一样，可以在insert传入列名时单独指定：
 
-```
+```scala
 rdd.toHBase("mytable")
       .insert("col1", "otherColumnFamily:col2")
       .inColumnFamily("defaultColumnFamily")
@@ -88,7 +88,7 @@ rdd.toHBase("mytable")
 
 #### Scala集合/序列写入HBase
 
-```
+```scala
 val dataList  = Seq[(String, String)](
       ("00001475304346643896037", "kgJkm0euSbe"),
       ("00001475376619355219953", "kiaR40qzI8o"),
@@ -112,7 +112,7 @@ dataList.toHBase("mytable")
 
 以上的方式将使用HTable的put list批量将集合中的数据一次全部put到HBase中，如果写入HBase时想使用缓存区的方式，需要另外添加几个参数：
 
-```
+```scala
 dataList.toHBase("mytable"
       //该参数指定写入时的autoFlush为false
       , Some(false, false)
@@ -129,13 +129,13 @@ dataList.toHBase("mytable"
 
 **导入隐式转换：**
 
-```
+```scala
 import info.xiaohei.spark.connector.hbase._
 ```
 
 读取HBase的数据操作需要通过sc来进行：
 
-```
+```scala
 val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
       .select("col1", "col2")
       .inColumnFamily("columnFamily")
@@ -164,7 +164,7 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
 
 上例中的hbaseRdd是从HBase中读取出来的数据，在此RDD的基础上进行转换操作：
 
-```
+```scala
 //创建org.apache.spark.sql.Row类型的RDD
 val rowRdd = hbaseRdd.map(r => Row(r._1, r._2, r._3))
 val sqlContext = new SQLContext(sc)
@@ -184,13 +184,13 @@ sqlContext.sql("select col1 from mytable").show()
 
 定义如下的case class:
 
-```
+```scala
 case class MyClass(name: String, age: Int)
 ```
 
 如果想达到以下的效果:
 
-```
+```scala
 val classRdd = sc.fromHBase[MyClass]("tableName")
     .select("name","age")
     .inColumnFamily("info")
@@ -203,7 +203,7 @@ classRdd.map{
 
 或者以下的效果:
 
-```
+```scala
 //classRdd的类型为RDD[MyClass]
 classRdd.toHBase("tableName")
     .insert("name","age")
@@ -213,12 +213,12 @@ classRdd.toHBase("tableName")
 
 需要另外实现能够解析自定义case class的隐式方法:
 
-```
-implicit def MyReaderConversion: DataReader[MyClass] = new CustomDataReader[(String, Int), MyClass] {
+```scala
+implicit def myReaderConversion: DataReader[MyClass] = new CustomDataReader[(String, Int), MyClass] {
     override def convert(data: (String, Int)): MyClass = MyClass(data._1, data._2)
   }
 
-implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyClass, (String, Int)] {
+implicit def myWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyClass, (String, Int)] {
     override def convert(data: MyClass): (String, Int) = (data.name, data.age)
   }
 ```
@@ -236,7 +236,7 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 
 在SparkConf中设置以下的信息：
 
-```
+```scala
 sparkConf
   .set("spark.mysql.host", "your-host")
   .set("spark.mysql.username", "your-username")
@@ -256,7 +256,7 @@ HBase小节中的设置属性的方法在这里也适用
 
 创建MysqlConf，并设置相关属性：
 
-```
+```scala
 //创建MySqlConf的隐式变量
 implicit val mysqlConf = MysqlConf.createConf(
       "your-host",
@@ -274,13 +274,13 @@ implicit val mysqlConf = MysqlConf.createConf(
 
 导入隐式转换：
 
-```
+```scala
 import info.xiaohei.spark.connector.mysql._
 ```
 
 之后任何Iterable类型的数据都可以直接写入MySQL中：
 
-```
+```scala
 list.toMysql("table-name")
   //插入的列名
   .insert("columns")
@@ -292,7 +292,7 @@ list.toMysql("table-name")
 
 ### 在Spark程序中从MySQL读取数据
 
-```
+```scala
 val res = sc.fromMysql[(Int,String,Int)]("table-name")
   .select("id","name","age")
   .where("where-conditions")
@@ -301,7 +301,7 @@ val res = sc.fromMysql[(Int,String,Int)]("table-name")
 
 ### 在普通程序中从MySQL读取数据
 
-```
+```scala
 //普通程序读取关系型数据库入口
 val dbEntry = new RelationalDbEntry
 
@@ -312,4 +312,34 @@ val res = dbEntry.fromMysql[(Int,String,Int)]("table-name")
 ```
 
 创建数据库入口之后的操作和spark中的流程一致
+
+### case class解析
+
+如果需要使用自定义的额case class解析/写入MySQL,例如:
+
+```scala
+case class Model(id: Int, name: String, age: Int)
+```
+
+基本流程和hbase小节中差不多,定义隐式转换:
+
+```scala
+implicit def myExecutorConversion: DataExecutor[Model] = new CustomDataExecutor[Model, (Int, String, Int)]() {
+    override def convert(data: Model): (Int, String, Int) = (data.id, data.name, data.age)
+}
+
+implicit def myMapperConversion: DataMapper[Model] = new CustomDataMapper[(Int, String, Int), Model]() {
+    override def convert(data: (Int, String, Int)): Model = Model(data._1, data._2, data._3)
+ }
+```
+
+之后可以直接使用:
+
+```scala
+val entry = new RelationalDbEntry
+val res = entry.fromMysql[Model]("test")
+  .select("id", "name", "age")
+  .get
+res.foreach(x => println(s"id:${x.id},name:${x.name},age:${x.age}"))
+```
 
