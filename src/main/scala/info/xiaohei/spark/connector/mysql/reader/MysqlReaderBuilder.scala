@@ -24,7 +24,7 @@ case class MysqlReaderBuilder[T](
     this.copy(columns = cols)
   }
 
-  def where(conditions: String) = {
+  def where(conditions: String): MysqlReaderBuilder[T]  = {
     this.copy(whereConditions = Some(conditions))
   }
 

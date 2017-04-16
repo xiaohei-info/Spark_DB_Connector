@@ -30,19 +30,19 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
     this.copy(columns = columns)
   }
 
-  def inColumnFamily(columnFamily: String) = {
+  def inColumnFamily(columnFamily: String): HBaseReaderBuilder[R] = {
     require(this.defaultColumnFamily.isEmpty, "Default column family has already been set")
     require(columnFamily.nonEmpty, "Invalid column family provided")
     this.copy(defaultColumnFamily = Some(columnFamily))
   }
 
-  def withStartRow(startRow: String) = {
+  def withStartRow(startRow: String): HBaseReaderBuilder[R] = {
     require(startRow.nonEmpty, s"Invalid start row '$startRow'")
     require(this.startRow.isEmpty, "Start row has already been set")
     this.copy(startRow = Some(startRow))
   }
 
-  def withEndRow(endRow: String) = {
+  def withEndRow(endRow: String): HBaseReaderBuilder[R] = {
     require(endRow.nonEmpty, s"Invalid stop row '$endRow'")
     require(this.stopRow.isEmpty, "Stop row has already been set")
     this.copy(stopRow = Some(endRow))
