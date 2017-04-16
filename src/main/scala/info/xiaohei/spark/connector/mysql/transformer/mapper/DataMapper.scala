@@ -14,3 +14,9 @@ trait DataMapper[T] extends Serializable {
   def map(resultSet: ResultSet): T
 }
 
+abstract class CustomDataMapper[S, T](implicit dataMapper: DataMapper[S]) extends DataMapper[T] {
+
+  override def map(resultSet: ResultSet): T = convert(dataMapper.map(resultSet))
+
+  def convert(data: S): T
+}

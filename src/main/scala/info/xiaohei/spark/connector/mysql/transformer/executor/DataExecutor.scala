@@ -20,3 +20,10 @@ trait DataExecutor[T] extends Serializable {
     ps.executeUpdate()
   }
 }
+
+abstract class CustomDataExecutor[S, T](implicit dataExecutor: DataExecutor[T]) extends DataExecutor[S] {
+
+  override def prepare(ps: PreparedStatement, data: S) = dataExecutor.prepare(ps, convert(data))
+
+  def convert(data: S): T
+}
