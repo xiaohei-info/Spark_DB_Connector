@@ -315,7 +315,7 @@ val res = dbEntry.fromMysql[(Int,String,Int)]("table-name")
 
 ### case class解析
 
-如果需要使用自定义的额case class解析/写入MySQL,例如:
+如果需要使用自定义的case class解析/写入MySQL,例如:
 
 ```scala
 case class Model(id: Int, name: String, age: Int)
