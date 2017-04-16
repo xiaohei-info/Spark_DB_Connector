@@ -20,9 +20,3 @@ trait DataExecutor[T] extends Serializable {
     ps.executeUpdate()
   }
 }
-
-//trait SingleColumnDataWriter[T] extends DataWriter[T] {
-//  override def write(data: T) = withSingleColumn(data)
-//
-//  def withSingleColumn(data: T): PreparedStatement
-//}
