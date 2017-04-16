@@ -58,8 +58,6 @@ trait DataMapperConversions extends Serializable {
     }
   }
 
-  //todo:option的处理
-
   implicit def tupleMapper2[T1, T2](implicit m1: DataMapper[T1], m2: DataMapper[T2]): DataMapper[(T1, T2)] = new DataMapper[(T1, T2)] {
     override def map(resultSet: ResultSet): (T1, T2) = {
       m1.index = 1

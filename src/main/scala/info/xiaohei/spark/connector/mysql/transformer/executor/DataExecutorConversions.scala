@@ -58,18 +58,6 @@ trait DataExecutorConversions extends Serializable {
     }
   }
 
-  // todo:Options的空值处理
-
-  //  implicit def optionExecutor[T](implicit executor: DataExecutor[T]): DataExecutor[Option[T]] = new DataExecutor[Option[T]] {
-  //    override def prepare(ps: PreparedStatement,data: Option[T]): Unit = {
-  //      if (data.nonEmpty) {
-  //        executor.prepare(data.get)
-  //      } else {
-  //        executor.prepare(null)
-  //      }
-  //    }
-  //  }
-
   // Tuples
 
   //todo:index的设置方式
