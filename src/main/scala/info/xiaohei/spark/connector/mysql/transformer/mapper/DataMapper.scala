@@ -9,12 +9,7 @@ import java.sql.ResultSet
   * Host: xiaohei.info
   */
 trait DataMapper[T] extends Serializable {
-  def map(resultSet: ResultSet): Seq[T] = {
-    val res = collection.mutable.ArrayBuffer[T]
-    while (resultSet.next()) {
+  var index: Int = 1
 
-    }
-  }
-
-  def read(resultSet: ResultSet)
+  def map(resultSet: ResultSet): T
 }
