@@ -225,6 +225,7 @@ implicit def MyWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 
 该隐式方法返回一个DataReader/DataWriter 重写CustomDataReader/CustomDataWriter中的convert方法
 将case class转换为一个元组或者将元组转化为case class即可
+
 ## MySQL
 
 除了可以将RDD/集合写入HBase之外，还可以在普通的程序中进行MySQL的相关操作
@@ -292,15 +293,10 @@ list.toMysql("table-name")
 ### 在Spark程序中从MySQL读取数据
 
 ```
-val res = sc.fromMysql("table-name")
-  .select("columns")
+val res = sc.fromMysql[(Int,String,Int)]("table-name")
+  .select("id","name","age")
   .where("where-conditions")
   .get
-
-//使用JDBC的ResultSet接口处理结果
-while (res.next()) {
-  res.getString("column-name")
-}
 ```
 
 ### 在普通程序中从MySQL读取数据
@@ -309,8 +305,8 @@ while (res.next()) {
 //普通程序读取关系型数据库入口
 val dbEntry = new RelationalDbEntry
 
-dbEntry.fromMysql("table-name")
-  .select("columns")
+val res = dbEntry.fromMysql[(Int,String,Int)]("table-name")
+  .select("id","name","age")
   .where("where-conditions")
   .get
 ```
