@@ -40,6 +40,8 @@ private[mysql] class MysqlWriterBuildMaker[C](collectionData: Iterable[C])
 private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mysqlConf: MysqlConf, dataExecutor: DataExecutor[C])
   extends Serializable {
   def save(): Unit = {
+    require(builder.columns.nonEmpty, "column names must be set!")
+
     val (connectStr, username, password) = mysqlConf.getMysqlInfo()
     val conn = DriverManager.getConnection(connectStr, username, password)
 
