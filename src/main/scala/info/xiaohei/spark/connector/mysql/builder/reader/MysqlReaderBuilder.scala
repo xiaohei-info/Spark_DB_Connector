@@ -24,7 +24,7 @@ case class MysqlReaderBuilder[T](
     this.copy(columns = cols)
   }
 
-  def where(conditions: String): MysqlReaderBuilder[T]  = {
+  def where(conditions: String): MysqlReaderBuilder[T] = {
     this.copy(whereConditions = Some(conditions))
   }
 
@@ -35,7 +35,8 @@ trait MysqlReaderBuilderConversions extends Serializable {
                                (implicit mysqlConf: MysqlConf, dataMapper: DataMapper[T]): Option[Seq[T]] = {
     val (connectStr, username, password) = mysqlConf.getMysqlInfo()
     val conn = DriverManager.getConnection(connectStr, username, password)
-    var sql = s"select ${builder.columns.mkString(",")} from ${builder.tableName}"
+    val columnName = if (builder.columns.isEmpty) "*" else builder.columns.mkString(",")
+    var sql = s"select $columnName from ${builder.tableName}"
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"
     }
