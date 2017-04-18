@@ -33,10 +33,10 @@ case class MysqlReaderBuilder[T](
 trait MysqlReaderBuilderConversions extends Serializable {
   implicit def readFromMysql[T](builder: MysqlReaderBuilder[T])
                                (implicit mysqlConf: MysqlConf, dataMapper: DataMapper[T]): Option[Seq[T]] = {
+    require(builder.columns.nonEmpty, "column names must be set!")
     val (connectStr, username, password) = mysqlConf.getMysqlInfo()
     val conn = DriverManager.getConnection(connectStr, username, password)
-    val columnName = if (builder.columns.isEmpty) "*" else builder.columns.mkString(",")
-    var sql = s"select $columnName from ${builder.tableName}"
+    var sql = s"select ${builder.columns.mkString(",")} from ${builder.tableName}"
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"
     }
