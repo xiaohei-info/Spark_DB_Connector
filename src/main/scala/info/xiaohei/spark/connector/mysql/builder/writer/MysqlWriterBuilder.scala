@@ -43,10 +43,9 @@ private[mysql] class MysqlWriter[C](builder: MysqlWriterBuilder[C])(implicit mys
     val (connectStr, username, password) = mysqlConf.getMysqlInfo()
     val conn = DriverManager.getConnection(connectStr, username, password)
 
-    val columnNames = if (builder.columns.toList.contains("*")) "" else s"(${builder.columns.mkString(",")})"
     var placeholder = ""
     for (i <- 0 until builder.columns.size) placeholder += "?,"
-    var sql = s"insert into ${builder.tableName}$columnNames values(${placeholder.substring(0, placeholder.length - 1)})"
+    var sql = s"insert into ${builder.tableName}(${builder.columns.mkString(",")}) values(${placeholder.substring(0, placeholder.length - 1)})"
     if (builder.whereConditions.nonEmpty) {
       sql += s" where ${builder.whereConditions}"
     }
