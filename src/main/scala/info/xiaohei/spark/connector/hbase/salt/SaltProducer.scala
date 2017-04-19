@@ -2,17 +2,19 @@ package info.xiaohei.spark.connector.hbase.salt
 
 import info.xiaohei.spark.connector.hbase.transformer.writer.{DataWriter, SingleColumnDataWriter}
 
+import scala.util.Random
+
 /**
   * Author: xiaohei
   * Date: 2017/4/19
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-abstract class SaltProducer[T](saltArray: Iterable[T]) extends Serializable {
+abstract class SaltProducer[T](saltArray: Array[T]) extends Serializable {
 
   def salt(rowkey: Array[Byte]): T
 
-  def verify(implicit writer: DataWriter[T]): Unit = {
+  def verifySaltLength(implicit writer: DataWriter[T]): Unit = {
     require(writer.isInstanceOf[SingleColumnDataWriter[T]], "salt array must be composed with primitive type")
 
     val singleColumnDataWriter = writer.asInstanceOf[SingleColumnDataWriter[T]]
@@ -27,5 +29,25 @@ abstract class SaltProducer[T](saltArray: Iterable[T]) extends Serializable {
       Some(size2)
     }).get
     require(saltLength > 0, "salt's length must great than 0")
+  }
+}
+
+class RandomSaltProducer[T](saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T](saltArray) {
+
+  //todo:移动到父类
+  verifySaltLength
+
+  override def salt(rowkey: Array[Byte]): T = {
+    val randomizer = new Random
+    saltArray(randomizer.nextInt(saltArray.length))
+  }
+}
+
+class HashSaltProducer[T](saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T](saltArray) {
+
+  verifySaltLength
+
+  override def salt(rowkey: Array[Byte]): T = {
+    saltArray((java.util.Arrays.hashCode(rowkey) & 0x7fffffff) % saltArray.length)
   }
 }
