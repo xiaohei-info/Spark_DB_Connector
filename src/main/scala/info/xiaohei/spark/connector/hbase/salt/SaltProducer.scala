@@ -54,3 +54,6 @@ class HashSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter[T
     saltArray((java.util.Arrays.hashCode(rowkey) & 0x7fffffff) % saltArray.length)
   }
 }
+
+//todo:test
+//todo:add to reader/writer builder
