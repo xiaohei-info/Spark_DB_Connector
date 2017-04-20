@@ -6,8 +6,8 @@ package info.xiaohei.spark.connector.hbase.salt
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-class SaltProducerFactory[T](saltArray: Iterable[T]) extends Serializable {
-  def getHashProducer()
+class SaltProducerFactory[T] extends Serializable {
+  def getHashProducer(saltArray: Iterable[T]): SaltProducer[T] = new HashSaltProducer[T](saltArray.toArray)
 
-  def getRandomProducer()
+  def getRandomProducer(saltArray: Iterable[T]): SaltProducer[T] = new RandomSaltProducer[T](saltArray.toArray)
 }
