@@ -10,10 +10,13 @@ import scala.util.Random
   * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
-abstract class SaltProducer[T](saltArray: Array[T]) extends Serializable {
+trait SaltProducer[T] extends Serializable {
+
+  def saltArray: Array[T]
 
   def salt(rowkey: Array[Byte]): T
 
+  //todo:protect
   def verifySaltLength(implicit writer: DataWriter[T]): Unit = {
     require(writer.isInstanceOf[SingleColumnDataWriter[T]], "salt array must be composed with primitive type")
 
@@ -31,8 +34,8 @@ abstract class SaltProducer[T](saltArray: Array[T]) extends Serializable {
     require(saltLength > 0, "salt's length must great than 0")
   }
 }
-
-class RandomSaltProducer[T](saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T](saltArray) {
+//todo:ClassTag
+class RandomSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   //todo:移动到父类
   verifySaltLength
@@ -43,7 +46,7 @@ class RandomSaltProducer[T](saltArray: Array[T])(implicit writer: DataWriter[T])
   }
 }
 
-class HashSaltProducer[T](saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T](saltArray) {
+class HashSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   verifySaltLength
 
