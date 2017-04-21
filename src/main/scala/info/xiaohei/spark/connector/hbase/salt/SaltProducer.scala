@@ -2,6 +2,7 @@ package info.xiaohei.spark.connector.hbase.salt
 
 import info.xiaohei.spark.connector.hbase.transformer.writer.{DataWriter, SingleColumnDataWriter}
 
+import scala.reflect.ClassTag
 import scala.util.Random
 
 /**
@@ -34,8 +35,8 @@ trait SaltProducer[T] extends Serializable {
     require(saltLength > 0, "salt's length must great than 0")
   }
 }
-//todo:ClassTag
-class RandomSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
+
+class RandomSaltProducer[T: ClassTag](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   //todo:移动到父类
   verifySaltLength
@@ -46,7 +47,7 @@ class RandomSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter
   }
 }
 
-class HashSaltProducer[T](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
+class HashSaltProducer[T: ClassTag](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   verifySaltLength
 
