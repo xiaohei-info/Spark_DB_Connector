@@ -55,5 +55,5 @@ private[salt] class HashSaltProducer[T: ClassTag](val saltArray: Array[T])(impli
   }
 }
 
-//todo:test
 //todo:add to reader/writer builder
+//todo:ClassTag do what
