@@ -7,6 +7,16 @@
 - HBase
 - MySQL
 
+添加Maven引用:
+
+```xml
+<dependency>
+    <groupId>info.xiaohei.spark</groupId>
+    <artifactId>spark-database-connector_2.10</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## HBase
 
 ### 设置HBase host
