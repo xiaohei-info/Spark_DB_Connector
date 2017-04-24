@@ -13,15 +13,15 @@ import scala.util.Random
   */
 trait SaltProducer[T] extends Serializable {
 
-  def salt(rowkey: Array[Byte]): T
+  def salting(rowkey: Array[Byte]): T
 
-  protected def saltArray: Array[T]
+  protected def salts: Array[T]
 
   protected def verifySaltLength(implicit writer: DataWriter[T]): Unit = {
     require(writer.isInstanceOf[SingleColumnDataWriter[T]], "salt array must be composed with primitive type")
 
     val singleColumnDataWriter = writer.asInstanceOf[SingleColumnDataWriter[T]]
-    val saltLength = saltArray.map(s => singleColumnDataWriter.writeSingleColumn(s))
+    val saltLength = salts.map(s => singleColumnDataWriter.writeSingleColumn(s))
       .map(b => b.getOrElse(Array[Byte]()))
       .map(_.length)
       .foldLeft(None.asInstanceOf[Option[Int]])((size1, size2) => {
@@ -34,22 +34,22 @@ trait SaltProducer[T] extends Serializable {
   }
 }
 
-private[salt] class RandomSaltProducer[T: ClassTag](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
+private[salt] class RandomSaltProducer[T: ClassTag](val salts: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   verifySaltLength
 
-  override def salt(rowkey: Array[Byte]): T = {
+  override def salting(rowkey: Array[Byte]): T = {
     val randomizer = new Random
-    saltArray(randomizer.nextInt(saltArray.length))
+    salts(randomizer.nextInt(salts.length))
   }
 }
 
-private[salt] class HashSaltProducer[T: ClassTag](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
+private[salt] class HashSaltProducer[T: ClassTag](val salts: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
   verifySaltLength
 
-  override def salt(rowkey: Array[Byte]): T = {
-    saltArray((java.util.Arrays.hashCode(rowkey) & 0x7fffffff) % saltArray.length)
+  override def salting(rowkey: Array[Byte]): T = {
+    salts((java.util.Arrays.hashCode(rowkey) & 0x7fffffff) % salts.length)
   }
 }
 
