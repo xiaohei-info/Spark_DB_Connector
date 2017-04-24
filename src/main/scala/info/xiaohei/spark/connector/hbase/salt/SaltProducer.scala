@@ -24,7 +24,6 @@ trait SaltProducer[T] extends Serializable {
     val saltLength = saltArray.map(s => singleColumnDataWriter.writeSingleColumn(s))
       .map(b => b.getOrElse(Array[Byte]()))
       .map(_.length)
-      //todo:优化
       .foldLeft(None.asInstanceOf[Option[Int]])((size1, size2) => {
       if (size1.nonEmpty && size1.get != size2) {
         throw new IllegalArgumentException(s"salts can not use different lengths with:${size1.get},$size2")
@@ -37,7 +36,6 @@ trait SaltProducer[T] extends Serializable {
 
 private[salt] class RandomSaltProducer[T: ClassTag](val saltArray: Array[T])(implicit writer: DataWriter[T]) extends SaltProducer[T]() {
 
-  //todo:移动到父类
   verifySaltLength
 
   override def salt(rowkey: Array[Byte]): T = {
