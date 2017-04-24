@@ -11,7 +11,7 @@
 
 ```xml
 <dependency>
-    <groupId>info.xiaohei.spark</groupId>
+    <groupId>info.xiaohei.www</groupId>
     <artifactId>spark-database-connector_2.10</artifactId>
     <version>1.0.0</version>
 </dependency>
