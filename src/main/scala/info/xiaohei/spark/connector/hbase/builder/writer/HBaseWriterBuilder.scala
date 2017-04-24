@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.hbase.builder.writer
 
 import info.xiaohei.spark.connector.hbase.HBaseConf
+import info.xiaohei.spark.connector.hbase.salt.{SaltProducer, SaltProducerFactory}
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
@@ -20,7 +21,8 @@ case class HBaseWriterBuilder[R] private[hbase](
                                                  private[hbase] val tableName: String,
                                                  //以下的参数通过方法动态设置
                                                  private[hbase] val defaultColumnFamily: Option[String] = None,
-                                                 private[hbase] val columns: Iterable[String] = Seq.empty
+                                                 private[hbase] val columns: Iterable[String] = Seq.empty,
+                                                 private[hbase] val salts: Iterable[String] = Seq.empty
                                                )
   extends Serializable {
 
@@ -35,19 +37,29 @@ case class HBaseWriterBuilder[R] private[hbase](
     require(family.nonEmpty, "Column family must provided")
     this.copy(defaultColumnFamily = Some(family))
   }
+
+  def withSalt(salts: Iterable[String]) = {
+    require(salts.size > 1, "Invalid salting. Two or more elements are required")
+    require(this.salts.isEmpty, "Salting has already been set")
+
+    this.copy(salts = salts)
+  }
 }
 
 private[hbase] class HBaseWriterBuildMaker[R](rdd: RDD[R]) extends Serializable {
   def toHBase(tableName: String) = HBaseWriterBuilder(rdd, tableName)
 }
 
-private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]) extends Serializable {
+private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]
+                                                                    , saltProducerFactory: SaltProducerFactory[String]) extends Serializable {
   def save(): Unit = {
     val conf = HBaseConf.createFromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)
 
     val job = Job.getInstance(conf)
     job.setOutputFormatClass(classOf[TableOutputFormat[String]])
+
+    val saltProducer: Option[SaltProducer[String]] = if (builder.salts.isEmpty) None else Some(saltProducerFactory.getHashProducer(builder.salts))
 
     val transRdd = builder.rdd.map {
       data =>
@@ -57,14 +69,14 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
         }
         require(builder.columns.nonEmpty, "No columns have been defined for the operation")
         val columnNames = builder.columns
-        val rowkey = convertedData.head.get
+        val rawRowkey = convertedData.head.get
         val columnData = convertedData.drop(1)
-
 
         if (columnData.size != columnNames.size) {
           throw new IllegalArgumentException(s"Wrong number of columns. Expected ${columnNames.size} found ${columnData.size}")
         }
-
+        //transform rowkey with salt
+        val rowkey = if (saltProducer.isEmpty) rawRowkey else Bytes.toBytes(saltProducer.get.salting(rawRowkey) + Bytes.toString(rawRowkey))
         val put = new Put(rowkey)
         columnNames.zip(columnData).foreach {
           case (name, Some(value)) =>
@@ -84,7 +96,7 @@ trait HBaseWriterBuilderConversions extends Serializable {
 
   implicit def rddToHBaseBuildMaker[R](rdd: RDD[R]): HBaseWriterBuildMaker[R] = new HBaseWriterBuildMaker[R](rdd)
 
-  implicit def builderToWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R]): HBaseWriter[R] = new HBaseWriter[R](builder)
+  implicit def builderToWriter[R](builder: HBaseWriterBuilder[R])(implicit writer: DataWriter[R], saltProducerFactory: SaltProducerFactory[String]): HBaseWriter[R] = new HBaseWriter[R](builder)
 }
 
 
