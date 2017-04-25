@@ -2,6 +2,13 @@
 
 隐藏处理各种数据库的连接细节，使用Scala API在Spark中简易地处理数据库连接的读写操作。
 
+相关测试环境信息:
+
+- Scala 2.11.8
+- Spark 1.6.0
+- HBase 0.98.4
+- Jdbc Driver 5.1.35
+
 目前支持的有:
 
 - HBase
