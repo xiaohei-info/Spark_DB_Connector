@@ -1,6 +1,7 @@
 package info.xiaohei.spark.connector.hbase.builder.writer
 
 import info.xiaohei.spark.connector.hbase.HBaseConf
+import info.xiaohei.spark.connector.hbase.salt.{SaltProducer, SaltProducerFactory}
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
 import org.apache.hadoop.hbase.client.{HTable, Put}
 import org.apache.hadoop.hbase.util.Bytes
@@ -21,7 +22,8 @@ case class CollectionWriterBuilder[C] private[hbase](
                                                       private[hbase] val autoFlush: Option[(Boolean, Boolean)],
                                                       private[hbase] val writeBufferSize: Option[Long],
                                                       private[hbase] val defaultColumnFamily: Option[String] = None,
-                                                      private[hbase] val columns: Iterable[String] = Seq.empty
+                                                      private[hbase] val columns: Iterable[String] = Seq.empty,
+                                                      private[hbase] val salts: Iterable[String] = Seq.empty
                                                     ) {
   def insert(cols: String*) = {
     require(this.columns.isEmpty, "Columns haven't been set")
@@ -34,6 +36,13 @@ case class CollectionWriterBuilder[C] private[hbase](
     require(family.nonEmpty, "Column family must provided")
     this.copy(defaultColumnFamily = Some(family))
   }
+
+  def withSalt(salts: Iterable[String]) = {
+    require(salts.size > 1, "Invalid salting. Two or more elements are required")
+    require(this.salts.isEmpty, "Salting has already been set")
+
+    this.copy(salts = salts)
+  }
 }
 
 //todo:collectionData implicit
@@ -45,7 +54,8 @@ private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C])(
 }
 
 //todo:trait
-private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]) extends Serializable {
+private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
+                                        (implicit writer: DataWriter[C], saltProducerFactory: SaltProducerFactory[String]) extends Serializable {
   def save(): Unit = {
     //val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
     val conf = builder.hBaseConf.createHadoopBaseConf()
@@ -61,6 +71,8 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
       batchOrMultiThread = false
     }
 
+    val saltProducer: Option[SaltProducer[String]] = if (builder.salts.isEmpty) None else Some(saltProducerFactory.getHashProducer(builder.salts))
+
     def coverData(data: C): Put = {
       val convertedData: Iterable[Option[Array[Byte]]] = writer.write(data)
       if (convertedData.size < 2) {
@@ -69,14 +81,14 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])(im
       //val columnsNames = Utils.chosenColumns(builder.columns, writer.columns)
       require(builder.columns.nonEmpty, "No columns have been defined for the operation")
       val columnNames = builder.columns
-      val rowkey = convertedData.head.get
+      val rawRowkey = convertedData.head.get
       val columnData = convertedData.drop(1)
 
 
       if (columnData.size != columnNames.size) {
         throw new IllegalArgumentException(s"Wrong number of columns. Expected ${columnNames.size} found ${columnData.size}")
       }
-
+      val rowkey = if (saltProducer.isEmpty) rawRowkey else Bytes.toBytes(saltProducer.get.salting(rawRowkey) + Bytes.toString(rawRowkey))
       val put = new Put(rowkey)
       columnNames.zip(columnData).foreach {
         case (name, Some(value)) =>
@@ -104,5 +116,5 @@ trait CollectionWriterBuilderConversions extends Serializable {
   implicit def collectionToBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
 
   //todo:不可以重名
-  implicit def collectionBuilderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C]): CollectionWriter[C] = new CollectionWriter[C](builder)
+  implicit def collectionBuilderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C], saltProducerFactory: SaltProducerFactory[String]): CollectionWriter[C] = new CollectionWriter[C](builder)
 }
