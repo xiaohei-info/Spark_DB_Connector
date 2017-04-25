@@ -68,7 +68,7 @@ trait HBaseReaderBuilderConversions extends Serializable {
     }
   }
 
-  private def toSimpleHBaseRdd[R: ClassTag](builder: HBaseReaderBuilder[R])
+  private def toSimpleHBaseRdd[R: ClassTag](builder: HBaseReaderBuilder[R], saltsLength: Int = 0)
                                            (implicit reader: DataReader[R]): SimpleHBaseRdd[R] = {
     val hbaseConfig = HBaseConf.createFromSpark(builder.sc.getConf).createHadoopBaseConf()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, builder.tableName)
@@ -91,6 +91,6 @@ trait HBaseReaderBuilderConversions extends Serializable {
       , classOf[Result])
       .asInstanceOf[NewHadoopRDD[ImmutableBytesWritable, Result]]
 
-    new SimpleHBaseRdd[R](rdd, builder)
+    new SimpleHBaseRdd[R](rdd, builder, saltsLength)
   }
 }

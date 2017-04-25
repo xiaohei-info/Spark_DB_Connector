@@ -20,7 +20,7 @@ import scala.reflect.ClassTag
   */
 //todo:SimpleHBaseRdd
 class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWritable, Result],
-                                  builder: HBaseReaderBuilder[R])
+                                  builder: HBaseReaderBuilder[R], saltsLength: Int)
                                  (implicit reader: DataReader[R]) extends RDD[R](hadoopHBaseRDD) {
   @DeveloperApi
   override def compute(split: Partition, context: TaskContext): Iterator[R] = {
@@ -47,6 +47,6 @@ class SimpleHBaseRdd[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWri
             None
           }
       }.toList
-    reader.read(Some(key.get) :: columns)
+    reader.read(Some(key.get.drop(saltsLength)) :: columns)
   }
 }
