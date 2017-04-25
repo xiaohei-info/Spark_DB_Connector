@@ -18,10 +18,10 @@ trait SaltProducer[T] extends Serializable {
   protected def salts: Array[T]
 
   protected def verify(implicit writer: DataWriter[T]): Unit = {
-    require(length > 0, "salt's length must great than 0")
+    require(singleSaltength > 0, "salt's length must great than 0")
   }
 
-  def length(implicit writer: DataWriter[T]): Int = {
+  def singleSaltength(implicit writer: DataWriter[T]): Int = {
     require(writer.isInstanceOf[SingleColumnDataWriter[T]], "salt array must be composed with primitive type")
 
     val singleColumnDataWriter = writer.asInstanceOf[SingleColumnDataWriter[T]]
