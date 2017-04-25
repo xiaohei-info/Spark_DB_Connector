@@ -56,6 +56,10 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
 
     this.copy(salts = salts)
   }
+
+  private[hbase] def withRanges(startRow: Option[String], stopRow: Option[String]) = {
+    copy(startRow = startRow, stopRow = stopRow)
+  }
 }
 
 trait HBaseReaderBuilderConversions extends Serializable {
@@ -64,7 +68,13 @@ trait HBaseReaderBuilderConversions extends Serializable {
     if (builder.salts.isEmpty) {
       toSimpleHBaseRdd(builder)
     } else {
+      val saltLength = saltProducerFactory.getHashProducer(builder.salts).singleSaltength
+      val sortedSalts = builder.salts.toList.sorted.map(Some(_))
+      val ranges = sortedSalts.zip(sortedSalts.drop(1) :+ None)
+      ranges.map {
+        salt =>
 
+      }
     }
   }
 
