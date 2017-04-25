@@ -1,9 +1,13 @@
 package info.xiaohei.spark.connector.test
 
 import info.xiaohei.spark.connector.RelationalDbEntry
+import info.xiaohei.spark.connector.hbase.salt.SaltProducerFactory
 import info.xiaohei.spark.connector.mysql._
 import info.xiaohei.spark.connector.mysql.transformer.executor.{CustomDataExecutor, DataExecutor}
 import info.xiaohei.spark.connector.mysql.transformer.mapper.{CustomDataMapper, DataMapper}
+import org.apache.hadoop.hbase.util.Bytes
+import info.xiaohei.spark.connector.hbase._
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Author: xiaohei
@@ -12,7 +16,6 @@ import info.xiaohei.spark.connector.mysql.transformer.mapper.{CustomDataMapper, 
   * Host: xiaohei.info
   */
 
-case class Model(id: Int, name: String, age: Int)
 
 object Test {
   def main(args: Array[String]) {
@@ -24,18 +27,48 @@ object Test {
       "3306",
       "its"
     )
-    val entry = new RelationalDbEntry
-    val res = entry.fromMysql[Model]("test")
-      .select("id", "name", "age")
-      .get
-    res.foreach(x => println(s"id:${x.id},name:${x.name},age:${x.age}"))
+    val conf = new SparkConf().setAppName("")
+      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      .set("spark.default.parallelism", "50")
+      .set("spark.shuffle.manager", "hash")
+      .set("spark.shuffle.consolidateFiles", "true")
+
+    val sc = new SparkContext(conf)
+    val list = (1 to 1000).map {
+      x =>
+        var res = ""
+        if (x < 10) {
+          res = s"000$x"
+        } else if (x < 100) {
+          res = s"00$x"
+        } else if (x < 1000) {
+          res = s"0$x"
+        } else {
+          res = x.toString
+        }
+        (res, "Avalue")
+    }
+    implicit val hBaseConf = HBaseConf.createFromSpark(conf)
+    list.toHBase("salt_test")
+      .insert("value")
+      .inColumnFamily("info")
+      .withSalt((0 to 9).map(s => s.toString))
+      .save()
+    //    sc.parallelize(list)
+    //      .toHBase("salt_test")
+    //      .insert("value")
+    //      .inColumnFamily("info")
+    //      .withSalt((0 to 9).map(s => s.toString))
+    //      .save()
+
+
+    //    val rdd = sc.fromHBase[(String, String)]("salt_test")
+    //      .select("value")
+    //      .inColumnFamily("info")
+    //      .withSalt((0 to 9).map(s => s.toString))
+    //    rdd.collect().foreach(x => println(s"x-->$x"))
+
   }
 
-  implicit def myExecutorConversion: DataExecutor[Model] = new CustomDataExecutor[Model, (Int, String, Int)]() {
-    override def convert(data: Model): (Int, String, Int) = (data.id, data.name, data.age)
-  }
 
-  implicit def myMapperConversion: DataMapper[Model] = new CustomDataMapper[(Int, String, Int), Model]() {
-    override def convert(data: (Int, String, Int)): Model = Model(data._1, data._2, data._3)
-  }
 }
