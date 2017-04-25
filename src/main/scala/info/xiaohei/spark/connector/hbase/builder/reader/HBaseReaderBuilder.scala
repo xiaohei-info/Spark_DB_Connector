@@ -61,6 +61,15 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
 trait HBaseReaderBuilderConversions extends Serializable {
   implicit def toHBaseRDD[R: ClassTag](builder: HBaseReaderBuilder[R])
                                       (implicit reader: DataReader[R], saltProducerFactory: SaltProducerFactory[String]): RDD[R] = {
+    if (builder.salts.isEmpty) {
+      toSimpleHBaseRdd(builder)
+    } else {
+
+    }
+  }
+
+  private def toSimpleHBaseRdd[R: ClassTag](builder: HBaseReaderBuilder[R])
+                                           (implicit reader: DataReader[R]): SimpleHBaseRdd[R] = {
     val hbaseConfig = HBaseConf.createFromSpark(builder.sc.getConf).createHadoopBaseConf()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, builder.tableName)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
@@ -84,7 +93,4 @@ trait HBaseReaderBuilderConversions extends Serializable {
 
     new SimpleHBaseRdd[R](rdd, builder)
   }
-
-  private def toSimpleHBaseRdd[R: ClassTag](builder: HBaseReaderBuilder[R])
-                                           (implicit reader: DataReader[R], saltProducerFactory: SaltProducerFactory[String]): RDD[R]
 }
