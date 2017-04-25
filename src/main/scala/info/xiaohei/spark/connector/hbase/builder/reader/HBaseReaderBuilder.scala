@@ -71,15 +71,23 @@ trait HBaseReaderBuilderConversions extends Serializable {
       val saltLength = saltProducerFactory.getHashProducer(builder.salts).singleSaltength
       val sortedSalts = builder.salts.toList.sorted.map(Some(_))
       val ranges = sortedSalts.zip(sortedSalts.drop(1) :+ None)
-      ranges.map {
+      val rddSeq = ranges.map {
         salt =>
-
+          builder.withRanges(
+            if (builder.startRow.nonEmpty) Some(salt._1.get + builder.startRow.get) else salt._1,
+            if (builder.stopRow.nonEmpty) Some(salt._1.get + builder.stopRow.get) else salt._2
+          )
+      }.map {
+        builder =>
+          toSimpleHBaseRdd(builder, saltLength).asInstanceOf[RDD[R]]
       }
+      val sc = rddSeq.head.sparkContext
+      new HBaseSaltRDD[R](sc, rddSeq)
     }
   }
 
   private def toSimpleHBaseRdd[R: ClassTag](builder: HBaseReaderBuilder[R], saltsLength: Int = 0)
-                                           (implicit reader: DataReader[R]): SimpleHBaseRdd[R] = {
+                                           (implicit reader: DataReader[R]): HBaseSimpleRDD[R] = {
     val hbaseConfig = HBaseConf.createFromSpark(builder.sc.getConf).createHadoopBaseConf()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, builder.tableName)
     require(builder.columns.nonEmpty, "No columns have been defined for the operation")
@@ -101,6 +109,6 @@ trait HBaseReaderBuilderConversions extends Serializable {
       , classOf[Result])
       .asInstanceOf[NewHadoopRDD[ImmutableBytesWritable, Result]]
 
-    new SimpleHBaseRdd[R](rdd, builder, saltsLength)
+    new HBaseSimpleRDD[R](rdd, builder, saltsLength)
   }
 }
