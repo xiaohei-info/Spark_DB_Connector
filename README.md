@@ -19,7 +19,7 @@
 ```xml
 <dependency>
     <groupId>info.xiaohei.www</groupId>
-    <artifactId>spark-database-connector_2.10</artifactId>
+    <artifactId>spark-database-connector_2.11</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
