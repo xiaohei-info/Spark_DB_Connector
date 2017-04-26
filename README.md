@@ -4,7 +4,7 @@
 
 相关测试环境信息:
 
-- Scala 2.11.8
+- Scala 2.11.8/2.10.5
 - Spark 1.6.0
 - HBase 0.98.4
 - Jdbc Driver 5.1.35
@@ -20,6 +20,16 @@
 <dependency>
     <groupId>info.xiaohei.www</groupId>
     <artifactId>spark-database-connector_2.11</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+Scala 2.10版本使用:
+
+```xml
+<dependency>
+    <groupId>info.xiaohei.www</groupId>
+    <artifactId>spark-database-connector_2.10</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
