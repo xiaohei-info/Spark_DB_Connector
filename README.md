@@ -152,6 +152,27 @@ dataList.toHBase("mytable"
 
 使用该方式时，集合中的每个数据都会被put一次，但是关闭了自动刷写，所以只有当缓冲区满了之后才会批量向HBase写入
 
+#### 写入时为Rowkey添加salt前缀
+
+```scala
+rdd.toHBase("mytable")
+      .insert("col1", "otherColumnFamily:col2")
+      .inColumnFamily("defaultColumnFamily")
+      //添加salt
+      .withSalt(saltArray)
+      .save()
+```
+
+saltArray是一个字符串数组,简单的例如0-9的字符串表示,由使用者自己定义
+
+使用withSalt函数之后,在写入HBase时会为rowkey添加一个saltArray中的随机串,**注意:为了更好的支持HBase部分键扫描(rowkey左对齐),数组中的所有元素长度都应该相等**
+
+取随机串的方式有两种:
+* 1.计算当前的rowkey的hashCode的16进制表示并对saltArray的长度取余数,得到saltArray中的一个随机串作为salt前缀添加到rowkey
+* 2.使用随机数生成器获得不超过saltArray长度的数字作为下标取数组中的值
+
+当前使用的是第一种方式
+
 ### 读取HBase数据
 
 **导入隐式转换：**
@@ -168,6 +189,9 @@ val hbaseRdd = sc.fromHBase[(String, String, String)]("mytable")
       .inColumnFamily("columnFamily")
       .withStartRow("startRow")
       .withEndRow("endRow")
+      //当rowkey中有随机的salt前缀时,将salt数组传入即可自动解析
+      //得到的rowkey将会是原始的,不带salt前缀的
+      .withSalt(saltArray)
 ```
 
 (1)使用sc的fromHBase函数传入要读取数据的表名，该函数需要指定读取数据的类型信息   
