@@ -14,7 +14,6 @@ trait DataExecutor[T] extends Serializable {
 
   def prepare(ps: PreparedStatement, data: T): Unit
 
-  //todo:ps传递方式
   def execute(ps: PreparedStatement, data: T): Unit = {
     prepare(ps, data)
     ps.executeUpdate()
