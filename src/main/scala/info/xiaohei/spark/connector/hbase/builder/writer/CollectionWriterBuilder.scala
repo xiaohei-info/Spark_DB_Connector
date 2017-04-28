@@ -45,7 +45,6 @@ case class CollectionWriterBuilder[C] private[hbase](
   }
 }
 
-//todo:collectionData implicit
 private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf) extends Serializable {
   def toHBase(tableName: String
               , autoFlush: Option[(Boolean, Boolean)] = None
@@ -53,7 +52,6 @@ private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C])(
   = CollectionWriterBuilder[C](hBaseConf, collectionData, tableName, autoFlush, writeBufferSize)
 }
 
-//todo:trait
 private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
                                         (implicit writer: DataWriter[C], saltProducerFactory: SaltProducerFactory[String]) extends Serializable {
   def save(): Unit = {
@@ -115,6 +113,5 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
 trait CollectionWriterBuilderConversions extends Serializable {
   implicit def collectionToBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf): CollectionWriterBuildMaker[C] = new CollectionWriterBuildMaker[C](collectionData)
 
-  //todo:不可以重名
   implicit def collectionBuilderToWriter[C](builder: CollectionWriterBuilder[C])(implicit writer: DataWriter[C], saltProducerFactory: SaltProducerFactory[String]): CollectionWriter[C] = new CollectionWriter[C](builder)
 }
