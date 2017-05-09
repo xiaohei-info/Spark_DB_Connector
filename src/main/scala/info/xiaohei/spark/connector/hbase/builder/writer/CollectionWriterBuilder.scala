@@ -11,7 +11,7 @@ import scala.collection.JavaConversions._
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: www.xiaohei.info
   */
 

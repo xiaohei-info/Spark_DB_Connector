@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.util.Bytes
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: www.xiaohei.info
   */
 

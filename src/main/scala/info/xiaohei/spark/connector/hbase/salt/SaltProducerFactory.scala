@@ -7,7 +7,7 @@ import scala.reflect.ClassTag
 /**
   * Author: xiaohei
   * Date: 2017/4/19
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 class SaltProducerFactory[T: ClassTag] extends Serializable {

@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext
 /**
   * Author: xiaohei
   * Date: 2017/3/26
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 private[mysql] class MysqlContext() extends Serializable {

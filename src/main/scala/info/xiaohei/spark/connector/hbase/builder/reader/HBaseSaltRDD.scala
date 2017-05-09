@@ -8,7 +8,7 @@ import scala.reflect.ClassTag
 /**
   * Author: xiaohei
   * Date: 2017/4/25
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 class HBaseSaltRDD[R: ClassTag](sc: SparkContext, rdds: Seq[RDD[R]]) extends UnionRDD[R](sc, rdds) {

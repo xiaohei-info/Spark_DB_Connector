@@ -8,7 +8,7 @@ import info.xiaohei.spark.connector.mysql.transformer.executor.DataExecutor
 /**
   * Author: xiaohei
   * Date: 2017/3/26
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 case class MysqlWriterBuilder[C] private[mysql](

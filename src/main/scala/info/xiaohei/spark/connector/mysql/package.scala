@@ -8,7 +8,7 @@ import info.xiaohei.spark.connector.mysql.builder.writer.MysqlWriterBuilderConve
 /**
   * Author: xiaohei
   * Date: 2017/4/6
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 package object mysql extends MysqlReaderBuilderConversions

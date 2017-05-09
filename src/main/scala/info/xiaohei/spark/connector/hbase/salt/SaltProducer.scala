@@ -8,7 +8,7 @@ import scala.util.Random
 /**
   * Author: xiaohei
   * Date: 2017/4/19
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 trait SaltProducer[T] extends Serializable {

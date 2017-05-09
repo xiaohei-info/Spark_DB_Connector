@@ -14,7 +14,7 @@ import scala.reflect.ClassTag
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: www.xiaohei.info
   */
 case class HBaseReaderBuilder[R: ClassTag] private[hbase](

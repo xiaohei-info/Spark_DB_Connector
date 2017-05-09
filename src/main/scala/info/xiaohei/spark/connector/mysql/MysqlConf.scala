@@ -5,7 +5,7 @@ import org.apache.spark.SparkContext
 /**
   * Author: xiaohei
   * Date: 2017/4/6
-  * Email: xiaohei.info@gmail.com
+  * Email: yuande.jiang@fugetech.com
   * Host: xiaohei.info
   */
 
