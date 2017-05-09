@@ -13,7 +13,7 @@ import org.apache.spark.rdd.RDD
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
 case class HBaseWriterBuilder[R] private[hbase](

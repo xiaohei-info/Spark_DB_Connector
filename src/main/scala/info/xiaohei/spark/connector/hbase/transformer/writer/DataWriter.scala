@@ -5,7 +5,7 @@ import info.xiaohei.spark.connector.hbase.transformer.DataTransformer
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
 trait DataWriter[T] extends DataTransformer {

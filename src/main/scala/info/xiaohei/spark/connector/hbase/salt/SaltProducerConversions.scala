@@ -7,7 +7,7 @@ import scala.reflect.ClassTag
 /**
   * Author: xiaohei
   * Date: 2017/4/20
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: xiaohei.info
   */
 trait SaltProducerConversions extends Serializable {

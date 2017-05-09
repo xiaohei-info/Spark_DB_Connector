@@ -6,7 +6,7 @@ import org.apache.spark.SparkConf
 /**
   * Author: xiaohei
   * Date: 2017/3/21
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
 

@@ -6,7 +6,7 @@ import java.sql.PreparedStatement
 /**
   * Author: xiaohei
   * Date: 2017/4/15
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: xiaohei.info
   */
 trait DataExecutorConversions extends Serializable {
