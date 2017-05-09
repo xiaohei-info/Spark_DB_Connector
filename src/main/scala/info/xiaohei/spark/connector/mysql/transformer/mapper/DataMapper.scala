@@ -5,7 +5,7 @@ import java.sql.ResultSet
 /**
   * Author: xiaohei
   * Date: 2017/4/16
-  * Email: yuande.jiang@fugetech.com
+  * Email: xiaohei.info@gmail.com
   * Host: xiaohei.info
   */
 trait DataMapper[T] extends Serializable {
