@@ -3,7 +3,8 @@ package info.xiaohei.spark.connector.hbase.builder.writer
 import info.xiaohei.spark.connector.hbase.HBaseConf
 import info.xiaohei.spark.connector.hbase.salt.{SaltProducer, SaltProducerFactory}
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
-import org.apache.hadoop.hbase.client.{HTable, Put}
+import org.apache.hadoop.hbase.TableName
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
 
 import scala.collection.JavaConversions._
@@ -19,8 +20,8 @@ case class CollectionWriterBuilder[C] private[hbase](
                                                       private[hbase] val hBaseConf: HBaseConf,
                                                       private[hbase] val collectionData: Iterable[C],
                                                       private[hbase] val tableName: String,
-                                                      private[hbase] val autoFlush: Option[(Boolean, Boolean)],
                                                       private[hbase] val writeBufferSize: Option[Long],
+                                                      private[hbase] val asynProcess: Boolean,
                                                       private[hbase] val defaultColumnFamily: Option[String] = None,
                                                       private[hbase] val columns: Iterable[String] = Seq.empty,
                                                       private[hbase] val salts: Iterable[String] = Seq.empty
@@ -47,9 +48,9 @@ case class CollectionWriterBuilder[C] private[hbase](
 
 private[hbase] class CollectionWriterBuildMaker[C](collectionData: Iterable[C])(implicit hBaseConf: HBaseConf) extends Serializable {
   def toHBase(tableName: String
-              , autoFlush: Option[(Boolean, Boolean)] = None
-              , writeBufferSize: Option[Long] = None)
-  = CollectionWriterBuilder[C](hBaseConf, collectionData, tableName, autoFlush, writeBufferSize)
+              , writeBufferSize: Option[Long] = None
+              , asynProcess: Boolean = false)
+  = CollectionWriterBuilder[C](hBaseConf, collectionData, tableName, writeBufferSize, asynProcess)
 }
 
 private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
@@ -57,17 +58,9 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
   def save(): Unit = {
     //val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
     val conf = builder.hBaseConf.createHadoopBaseConf()
+    val connection = ConnectionFactory.createConnection(conf)
 
-    val table = new HTable(conf, builder.tableName)
-    //true为批量写,false为多线程并发写
-    var batchOrMultiThread = true
-
-    if (builder.autoFlush.nonEmpty && builder.writeBufferSize.nonEmpty) {
-      val (autoFlush, clearBufferOnFail) = builder.autoFlush.get
-      table.setAutoFlush(autoFlush, clearBufferOnFail)
-      table.setWriteBufferSize(builder.writeBufferSize.get)
-      batchOrMultiThread = false
-    }
+    val tableName = TableName.valueOf(builder.tableName)
 
     val saltProducer: Option[SaltProducer[String]] = if (builder.salts.isEmpty) None else Some(saltProducerFactory.getHashProducer(builder.salts))
 
@@ -98,13 +91,18 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
       put
     }
 
-    if (batchOrMultiThread) {
+    if (builder.asynProcess) {
+      val params = new BufferedMutatorParams(tableName).writeBufferSize(builder.writeBufferSize.get)
+      val mutator = connection.getBufferedMutator(params)
+      builder.collectionData.foreach(data => mutator.mutate(coverData(data)))
+      mutator.close()
+    } else {
+      val table = connection.getTable(tableName)
       val putList = builder.collectionData.map(coverData).toList
       table.put(putList)
-    } else {
-      builder.collectionData.foreach(data => table.put(coverData(data)))
-      table.flushCommits()
+      table.close()
     }
+    connection.close()
   }
 
 }

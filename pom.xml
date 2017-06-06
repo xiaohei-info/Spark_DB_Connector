@@ -10,12 +10,31 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<scala.version>2.10.5</scala.version>-->
+        <!--<scala.binary.version>2.10</scala.binary.version>-->
         <scala.version>2.11.8</scala.version>
         <scala.binary.version>2.11</scala.binary.version>
         <spark.version>1.6.0</spark.version>
-        <hbase.version>0.98.4-hadoop2</hbase.version>
+        <!--<hbase.version>0.98.4-hadoop2</hbase.version>-->
+        <hbase.version>1.2.0</hbase.version>
         <mysql.version>5.1.35</mysql.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter Repository</name>
+            <url>http://jcenter.bintray.com/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <!--spark-->
