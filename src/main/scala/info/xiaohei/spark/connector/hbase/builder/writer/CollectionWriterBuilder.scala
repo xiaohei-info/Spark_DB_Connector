@@ -1,11 +1,14 @@
 package info.xiaohei.spark.connector.hbase.builder.writer
 
+import java.security.PrivilegedAction
+
 import info.xiaohei.spark.connector.hbase.HBaseConf
 import info.xiaohei.spark.connector.hbase.salt.{SaltProducer, SaltProducerFactory}
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
 import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.security.UserGroupInformation
 
 import scala.collection.JavaConversions._
 
@@ -58,7 +61,22 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
   def save(): Unit = {
     //val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
     val conf = builder.hBaseConf.createHadoopBaseConf()
-    val connection = ConnectionFactory.createConnection(conf)
+
+    val connection = if (conf.get("spark.hbase.krb.principal").isEmpty || conf.get("spark.hbase.krb.keytab").isEmpty) {
+      ConnectionFactory.createConnection(conf)
+    }
+    else {
+      UserGroupInformation.setConfiguration(conf)
+      val ugi: UserGroupInformation = UserGroupInformation
+        .loginUserFromKeytabAndReturnUGI(conf.get("spark.hbase.krb.principal"), conf.get("spark.hbase.krb.keytab"))
+      UserGroupInformation.setLoginUser(ugi)
+      ugi.doAs(new PrivilegedAction[Connection] {
+        def run: Connection = {
+          ConnectionFactory.createConnection(conf)
+        }
+      })
+    }
+
 
     val tableName = TableName.valueOf(builder.tableName)
 

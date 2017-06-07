@@ -1,5 +1,6 @@
 package info.xiaohei.spark.connector.hbase
 
+import org.apache.hadoop.fs.Path
 import org.apache.hadoop.hbase.{HBaseConfiguration, HConstants}
 import org.apache.spark.SparkConf
 
@@ -10,13 +11,24 @@ import org.apache.spark.SparkConf
   * Host: www.xiaohei.info
   */
 
-case class HBaseConf private[hbase](hbaseHost: Option[String] = None
-                                    , hbaseConfig: String = "hbase-site.xml") {
+case class HBaseConf private[hbase](hbaseHost: Option[String]
+                                    , hbaseConfig: Option[String] = None
+                                    , principal: Option[String] = None
+                                    , keytab: Option[String] = None) {
   def createHadoopBaseConf() = {
     val conf = HBaseConfiguration.create()
 
-    val localConfigFile = Option(getClass.getClassLoader.getResource(hbaseConfig))
-    localConfigFile.foreach(c => conf.addResource(c))
+    hbaseConfig.foreach {
+      hbaseConfigValue =>
+        for (localConf <- hbaseConfigValue.split(",")) {
+          //todo:路径不存在的处理
+          conf.addResource(new Path(localConf))
+        }
+    }
+
+    //todo:测试两种读法
+    //    val localConfigFile = Option(getClass.getClassLoader.getResource(hbaseConfig))
+    //    localConfigFile.foreach(c => conf.addResource(c))
 
     hbaseHost.foreach {
       host =>
@@ -25,6 +37,16 @@ case class HBaseConf private[hbase](hbaseHost: Option[String] = None
     if (conf.get(HConstants.ZOOKEEPER_QUORUM).isEmpty) {
       conf.set(HConstants.ZOOKEEPER_QUORUM, HBaseConf.defaultHBaseHost)
     }
+
+    principal.foreach {
+      krb =>
+        conf.set("spark.hbase.krb.principal", krb)
+    }
+    keytab.foreach {
+      key =>
+        conf.set("spark.hbase.krb.keytab", key)
+    }
+
     conf
   }
 }
@@ -35,8 +57,11 @@ object HBaseConf {
 
   def createFromSpark(conf: SparkConf) = {
     val hbaseHost = conf.get("spark.hbase.host", null)
-    val hbaseConfig = conf.get("spark.hbase.config", "hbase-site.xml")
-    HBaseConf(Option(hbaseHost), hbaseConfig)
+    val hbaseConfig = conf.get("spark.hbase.config", null)
+
+    val principal = conf.get("spark.hbase.krb.principal", null)
+    val keytab = conf.get("spark.hbase.krb.keytab", null)
+    HBaseConf(Option(hbaseHost), Option(hbaseConfig), Option(principal), Option(keytab))
   }
 
   def createConf(hbaseHost: String) = {
