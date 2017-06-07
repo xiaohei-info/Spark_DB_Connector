@@ -6,14 +6,15 @@
 
     <groupId>info.xiaohei.www</groupId>
     <artifactId>spark-database-connector_2.11</artifactId>
+    <!--<artifactId>spark-database-connector_2.10</artifactId>-->
     <version>1.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!--<scala.version>2.10.5</scala.version>-->
-        <!--<scala.binary.version>2.10</scala.binary.version>-->
-        <scala.version>2.11.8</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.10.5</scala.version>
+        <scala.binary.version>2.10</scala.binary.version>
+        <!--<scala.version>2.11.8</scala.version>-->
+        <!--<scala.binary.version>2.11</scala.binary.version>-->
         <spark.version>1.6.0</spark.version>
         <!--<hbase.version>0.98.4-hadoop2</hbase.version>-->
         <hbase.version>1.2.0</hbase.version>

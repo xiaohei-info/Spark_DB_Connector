@@ -82,7 +82,7 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
           case (name, Some(value)) =>
             val family = if (name.contains(":")) Bytes.toBytes(name.substring(0, name.indexOf(":"))) else Bytes.toBytes(builder.defaultColumnFamily.get)
             val column = if (name.contains(":")) Bytes.toBytes(name.substring(name.indexOf(":") + 1)) else Bytes.toBytes(name)
-            put.add(family, column, value)
+            put.addColumn(family, column, value)
           case _ =>
         }
         (new ImmutableBytesWritable, put)
