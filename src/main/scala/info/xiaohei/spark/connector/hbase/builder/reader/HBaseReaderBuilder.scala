@@ -1,8 +1,8 @@
 package info.xiaohei.spark.connector.hbase.builder.reader
 
 import info.xiaohei.spark.connector.hbase.salt.SaltProducerFactory
-import info.xiaohei.spark.connector.hbase.{HBaseCommonUtils, HBaseConf}
 import info.xiaohei.spark.connector.hbase.transformer.reader.DataReader
+import info.xiaohei.spark.connector.hbase.{HBaseCommonUtils, HBaseConf}
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat
@@ -102,6 +102,8 @@ trait HBaseReaderBuilderConversions extends Serializable {
     if (builder.stopRow.nonEmpty) {
       hbaseConfig.set(TableInputFormat.SCAN_ROW_STOP, builder.stopRow.get)
     }
+
+
     //todo:asInstanceOf
     val rdd = builder.sc.newAPIHadoopRDD(hbaseConfig
       , classOf[TableInputFormat]

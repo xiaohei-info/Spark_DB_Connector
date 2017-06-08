@@ -87,7 +87,6 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
         }
         (new ImmutableBytesWritable, put)
     }
-
     transRdd.saveAsNewAPIHadoopDataset(job.getConfiguration)
   }
 }
