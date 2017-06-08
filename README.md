@@ -1,5 +1,10 @@
 # Spark Database Connector
 
+## New Feature
+
+- List写入HBase支持Kerberos认证
+- 升级HBase Client API为1.2.0版本
+
 隐藏处理各种数据库的连接细节，使用Scala API在Spark中简易地处理数据库连接的读写操作。
 
 相关测试环境信息:
@@ -277,6 +282,18 @@ implicit def myWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 该隐式方法返回一个DataReader/DataWriter 重写CustomDataReader/CustomDataWriter中的convert方法
 将case class转换为一个元组或者将元组转化为case class即可
 
+### 写入带有Kerberos认证的HBase
+
+除了上述过程中写HBase需要的配置外,还需要指定以下三个配置:
+
+- spark.hbase.krb.principal:认证的principal用户名
+- spark.hbase.krb.keytab:keytab文件路径(各个节点都存在且路径保持一致)
+- spark.hbase.config:hbase-site.xml文件路径
+
+写入HBase时将会使用提供给的krb信息进行认证
+
+TODO:RDD的读写接口目前还未实现Kerberos认证
+
 ## MySQL
 
 除了可以将RDD/集合写入HBase之外，还可以在普通的程序中进行MySQL的相关操作
@@ -393,4 +410,5 @@ val res = entry.fromMysql[Model]("test")
   .get
 res.foreach(x => println(s"id:${x.id},name:${x.name},age:${x.age}"))
 ```
+
 
