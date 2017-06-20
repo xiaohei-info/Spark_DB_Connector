@@ -26,6 +26,13 @@ case class MysqlWriterBuilder[C] private[mysql](
     this.copy(columns = cols)
   }
 
+  def insert(cols: Iterable[String]) = {
+    require(this.columns.isEmpty, "Columns haven't been set")
+    require(cols.nonEmpty, "Columns must by set,at least one")
+
+    this.copy(columns = cols)
+  }
+
   def where(conditions: String) = {
     this.copy(whereConditions = Some(conditions))
   }

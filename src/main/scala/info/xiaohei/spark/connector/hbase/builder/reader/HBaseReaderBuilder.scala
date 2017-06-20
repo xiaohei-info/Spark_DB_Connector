@@ -32,6 +32,12 @@ case class HBaseReaderBuilder[R: ClassTag] private[hbase](
     this.copy(columns = columns)
   }
 
+  def select(columns: Iterable[String]): HBaseReaderBuilder[R] = {
+    require(this.columns.isEmpty, "Columns have already been set")
+    require(columns.nonEmpty, "You should provide at least one column")
+    this.copy(columns = columns)
+  }
+
   def inColumnFamily(columnFamily: String): HBaseReaderBuilder[R] = {
     require(this.defaultColumnFamily.isEmpty, "Default column family has already been set")
     require(columnFamily.nonEmpty, "Invalid column family provided")

@@ -35,6 +35,12 @@ case class CollectionWriterBuilder[C] private[hbase](
     this.copy(columns = cols)
   }
 
+  def insert(cols: Iterable[String]) = {
+    require(this.columns.isEmpty, "Columns haven't been set")
+    require(cols.nonEmpty, "Columns must by set,at least one")
+    this.copy(columns = cols)
+  }
+
   def inColumnFamily(family: String) = {
     require(this.defaultColumnFamily.isEmpty, "Default column family hasn't been set")
     require(family.nonEmpty, "Column family must provided")

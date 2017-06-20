@@ -24,6 +24,13 @@ case class MysqlReaderBuilder[T](
     this.copy(columns = cols)
   }
 
+  def select(cols: Iterable[String]): MysqlReaderBuilder[T] = {
+    require(this.columns.isEmpty, "Columns haven't been set")
+    require(cols.nonEmpty, "Columns must by set,at least one")
+
+    this.copy(columns = cols)
+  }
+
   def where(conditions: String): MysqlReaderBuilder[T] = {
     this.copy(whereConditions = Some(conditions))
   }
