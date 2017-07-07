@@ -282,7 +282,7 @@ implicit def myWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 该隐式方法返回一个DataReader/DataWriter 重写CustomDataReader/CustomDataWriter中的convert方法
 将case class转换为一个元组或者将元组转化为case class即可
 
-### 写入带有Kerberos认证的HBase
+## 带有Kerberos认证的HBase
 
 除了上述过程中写HBase需要的配置外,还需要指定以下三个配置:
 
@@ -291,6 +291,18 @@ implicit def myWriterConversion: DataWriter[MyClass] = new CustomDataWriter[MyCl
 - spark.hbase.config:hbase-site.xml文件路径
 
 写入HBase时将会使用提供给的krb信息进行认证
+
+当前仅支持无缝读取启用了Kerberos认证的HBase
+写入时有一定限制，如要使用RDD的foreachPartition入库:
+
+```scala
+rdd.foreachPartition{
+    data =>
+        data.toList.toHBase("table").insert("columns")//...
+}
+```
+
+**注意,foreachPartition中的toList操作将会把分区中的所有数据加载到内存中，如果数据量过大可能会造成OOM，增加Executor的内存即可**
 
 TODO:RDD的读写接口目前还未实现Kerberos认证
 
