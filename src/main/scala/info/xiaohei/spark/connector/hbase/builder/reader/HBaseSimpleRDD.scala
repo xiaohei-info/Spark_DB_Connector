@@ -19,7 +19,7 @@ import scala.reflect.ClassTag
   * Host: www.xiaohei.info
   */
 //todo:SimpleHBaseRdd
-class HBaseSimpleRDD[R: ClassTag](hadoopHBaseRDD: NewHadoopRDD[ImmutableBytesWritable, Result],
+class HBaseSimpleRDD[R: ClassTag](hadoopHBaseRDD: RDD[(ImmutableBytesWritable, Result)],
                                   builder: HBaseReaderBuilder[R], saltsLength: Int)
                                  (implicit reader: DataReader[R]) extends RDD[R](hadoopHBaseRDD) {
   @DeveloperApi
