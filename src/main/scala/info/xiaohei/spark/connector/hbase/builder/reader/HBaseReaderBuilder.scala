@@ -6,8 +6,9 @@ import info.xiaohei.spark.connector.hbase.{HBaseCommonUtils, HBaseConf}
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat
+import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.SparkContext
-import org.apache.spark.rdd.{NewHadoopRDD, RDD}
+import org.apache.spark.rdd.{HBaseScanRDD, NewHadoopRDD, RDD}
 
 import scala.reflect.ClassTag
 
@@ -109,14 +110,21 @@ trait HBaseReaderBuilderConversions extends Serializable {
       hbaseConfig.set(TableInputFormat.SCAN_ROW_STOP, builder.stopRow.get)
     }
 
-
-    //todo:asInstanceOf
-    val rdd = builder.sc.newAPIHadoopRDD(hbaseConfig
-      , classOf[TableInputFormat]
-      , classOf[ImmutableBytesWritable]
-      , classOf[Result])
-      .asInstanceOf[NewHadoopRDD[ImmutableBytesWritable, Result]]
-
+    //krb认证
+    val rdd = if (hbaseConfig.get("spark.hbase.krb.principal") == null || hbaseConfig.get("spark.hbase.krb.keytab") == null) {
+      //todo:asInstanceOf
+      builder.sc.newAPIHadoopRDD(hbaseConfig
+        , classOf[TableInputFormat]
+        , classOf[ImmutableBytesWritable]
+        , classOf[Result])
+        .asInstanceOf[NewHadoopRDD[ImmutableBytesWritable, Result]]
+    } else {
+      new HBaseScanRDD[ImmutableBytesWritable, Result](builder.sc
+        , classOf[TableInputFormat]
+        , classOf[ImmutableBytesWritable]
+        , classOf[Result]
+        , hbaseConfig)
+    }
     new HBaseSimpleRDD[R](rdd, builder, saltsLength)
   }
 }
