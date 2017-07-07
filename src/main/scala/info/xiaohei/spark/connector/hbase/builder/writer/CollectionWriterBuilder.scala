@@ -68,7 +68,7 @@ private[hbase] class CollectionWriter[C](builder: CollectionWriterBuilder[C])
     //val conf = HBaseConf.createHBaseConf(builder.hbaseHost).createHadoopBaseConf()
     val conf = builder.hBaseConf.createHadoopBaseConf()
 
-    val connection = if (conf.get("spark.hbase.krb.principal").isEmpty || conf.get("spark.hbase.krb.keytab").isEmpty) {
+    val connection = if (conf.get("spark.hbase.krb.principal") == null || conf.get("spark.hbase.krb.keytab") == null) {
       ConnectionFactory.createConnection(conf)
     }
     else {
