@@ -119,7 +119,10 @@ trait HBaseReaderBuilderConversions extends Serializable {
         , classOf[Result])
         .asInstanceOf[NewHadoopRDD[ImmutableBytesWritable, Result]]
     } else {
-      new HBaseScanRDD[ImmutableBytesWritable, Result](builder.sc
+      val principle = hbaseConfig.get("spark.hbase.krb.principal")
+      val keytab = hbaseConfig.get("spark.hbase.krb.keytab")
+      new HBaseScanRDD[ImmutableBytesWritable, Result](principle, keytab
+        , builder.sc
         , classOf[TableInputFormat]
         , classOf[ImmutableBytesWritable]
         , classOf[Result]

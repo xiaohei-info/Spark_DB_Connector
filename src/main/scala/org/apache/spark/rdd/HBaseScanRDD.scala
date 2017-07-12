@@ -21,6 +21,8 @@ import org.apache.spark.util.{SerializableConfiguration, ShutdownHookManager}
 import scala.reflect.ClassTag
 
 class HBaseScanRDD[K, V](
+                          principle: String,
+                          keytab: String,
                           sc: SparkContext,
                           inputFormatClass: Class[_ <: InputFormat[K, V]],
                           keyClass: Class[K],
@@ -74,7 +76,7 @@ class HBaseScanRDD[K, V](
       case _ =>
     }
     val jobContext = newJobContext(_conf, jobId)
-    val rawSplits = HBaseKerberosUtil.ugiDoAs(confBroadcast.value, () => {
+    val rawSplits = HBaseKerberosUtil.ugiDoAs(confBroadcast.value, principle, keytab, () => {
       inputFormat.getSplits(jobContext).toArray
     }: Array[Object])
     val result = new Array[Partition](rawSplits.length)
@@ -114,7 +116,7 @@ class HBaseScanRDD[K, V](
       }
       val attemptId: TaskAttemptID = newTaskAttemptID(jobTrackerId, id, isMap = true, split.index, 0)
       val hadoopAttemptContext: TaskAttemptContext = newTaskAttemptContext(conf, attemptId)
-      private var reader = HBaseKerberosUtil.ugiDoAs(confBroadcast.value, () => {
+      private var reader = HBaseKerberosUtil.ugiDoAs(confBroadcast.value, principle, keytab, () => {
         val _reader = format.createRecordReader(
           split.serializableHadoopSplit.value, hadoopAttemptContext)
         _reader.initialize(split.serializableHadoopSplit.value, hadoopAttemptContext)

@@ -14,10 +14,10 @@ import org.apache.spark.util.SerializableConfiguration
   */
 object HBaseKerberosUtil {
   @throws[IOException]
-  def ugiDoAs[A](conf: SerializableConfiguration, func: () => A): A = {
+  def ugiDoAs[A](conf: SerializableConfiguration, principle: String, keytab: String, func: () => A): A = {
     UserGroupInformation.setConfiguration(conf.value)
     val ugi: UserGroupInformation = UserGroupInformation
-      .loginUserFromKeytabAndReturnUGI("hpt", "/app/hpt.keytab")
+      .loginUserFromKeytabAndReturnUGI(principle, keytab)
     UserGroupInformation.setLoginUser(ugi)
     ugi.checkTGTAndReloginFromKeytab()
     ugi.doAs(new PrivilegedExceptionAction[A] {
