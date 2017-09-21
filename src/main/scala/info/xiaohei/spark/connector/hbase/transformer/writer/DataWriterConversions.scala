@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.util.Bytes
   * Email: xiaohei.info@gmail.com
   * Host: www.xiaohei.info
   */
-trait DataWriterConversions extends Serializable{
+trait DataWriterConversions extends Serializable {
   implicit def intWriter: DataWriter[Int] = new SingleColumnDataWriter[Int] {
     override def writeSingleColumn(data: Int): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
@@ -41,10 +41,20 @@ trait DataWriterConversions extends Serializable{
     override def writeSingleColumn(data: String): Option[Array[Byte]] = Some(Bytes.toBytes(data))
   }
 
+  implicit def stringArrayWriter: DataWriter[Array[String]] = new DataWriter[Array[String]] {
+    override def write(data: Array[String]): HBaseData = data.map(x => Some(Bytes.toBytes(x)))
+  }
+
+
+  //  implicit def seqStringWriter[Iterable[String]](implicit c: DataWriter[String]): DataWriter[Iterable[String]] = new DataWriter[Iterable[String]] {
+  //    override def write(data: Iterable[String]): HBaseData = data.map(c.write)
+  //  }
+
+
   // Options
 
   implicit def optionWriter[T](implicit c: DataWriter[T]): DataWriter[Option[T]] = new DataWriter[Option[T]] {
-    override def write(data: Option[T]): HBaseData = if(data.nonEmpty) c.write(data.get) else Seq(None)
+    override def write(data: Option[T]): HBaseData = if (data.nonEmpty) c.write(data.get) else Seq(None)
   }
 
   // Tuples
