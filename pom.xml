@@ -11,10 +11,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.version>2.10.5</scala.version>
-        <scala.binary.version>2.10</scala.binary.version>
-        <!--<scala.version>2.11.8</scala.version>-->
-        <!--<scala.binary.version>2.11</scala.binary.version>-->
+        <!--<scala.version>2.10.5</scala.version>-->
+        <!--<scala.binary.version>2.10</scala.binary.version>-->
+        <scala.version>2.11.8</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
         <spark.version>2.2.0</spark.version>
         <!--<hbase.version>0.98.4-hadoop2</hbase.version>-->
         <hbase.version>1.2.0</hbase.version>
@@ -40,6 +40,11 @@
     <dependencies>
         <!--spark-->
         <dependency>
+            <groupId>org.scalaj</groupId>
+            <artifactId>scalaj-http_2.10</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>
             <version>${spark.version}</version>
@@ -63,10 +68,10 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.spark</groupId>-->
-            <!--<artifactId>spark-test-tags_${scala.binary.version}</artifactId>-->
-            <!--<version>${spark.version}</version>-->
-            <!--<scope>provided</scope>-->
+        <!--<groupId>org.apache.spark</groupId>-->
+        <!--<artifactId>spark-test-tags_${scala.binary.version}</artifactId>-->
+        <!--<version>${spark.version}</version>-->
+        <!--<scope>provided</scope>-->
         <!--</dependency>-->
         <!--hbase-->
         <dependency>
