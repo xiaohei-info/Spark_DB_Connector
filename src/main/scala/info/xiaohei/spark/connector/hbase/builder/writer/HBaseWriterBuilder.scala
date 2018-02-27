@@ -3,6 +3,7 @@ package info.xiaohei.spark.connector.hbase.builder.writer
 import info.xiaohei.spark.connector.hbase.HBaseConf
 import info.xiaohei.spark.connector.hbase.salt.{SaltProducer, SaltProducerFactory}
 import info.xiaohei.spark.connector.hbase.transformer.writer.DataWriter
+import info.xiaohei.spark.connector.utils.NetUtil
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
@@ -62,6 +63,8 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
     val conf = HBaseConf.createFromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)
     conf.set("mapreduce.output.fileoutputformat.outputdir", "/user/xy_jiangyuande/spark/jobs/temp")
+    //alter
+    NetUtil.wechatAlert(s"updating hbase table: ${builder.tableName}")
 
     val job = Job.getInstance(conf)
     job.setOutputFormatClass(classOf[TableOutputFormat[String]])
