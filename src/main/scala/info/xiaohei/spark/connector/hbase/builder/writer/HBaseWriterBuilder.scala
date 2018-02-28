@@ -63,8 +63,6 @@ private[hbase] class HBaseWriter[R](builder: HBaseWriterBuilder[R])(implicit wri
     val conf = HBaseConf.createFromSpark(builder.rdd.context.getConf).createHadoopBaseConf()
     conf.set(TableOutputFormat.OUTPUT_TABLE, builder.tableName)
     conf.set("mapreduce.output.fileoutputformat.outputdir", "/user/xy_jiangyuande/spark/jobs/temp")
-    //alter
-    NetUtil.wechatAlert(s"updating hbase table: ${builder.tableName}")
 
     val job = Job.getInstance(conf)
     job.setOutputFormatClass(classOf[TableOutputFormat[String]])
